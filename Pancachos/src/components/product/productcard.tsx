@@ -24,8 +24,8 @@ export default function ProductCard() {
             <h3 className="font-semibold text-gray-800 text-sm leading-tight">
               Seasoned bread
             </h3>
-            <div className="bg-orange-100 border border-orange-300 text-orange-600 font-semibold rounded-full text-xs px-2 py-1">
-              Paola
+            <div className="bg-[#C3A366] border-[#786033] text-gray-100 font-semibold rounded-full text-xs px-2 py-1">
+              Panaderia paola
             </div>
           </div>
 
@@ -50,7 +50,7 @@ export default function ProductCard() {
             <span className="font-semibold text-gray-800 text-sm">
               $ 2000 COP
             </span>
-            <button className="bg-yellow-400 hover:bg-yellow-500 text-white text-xs font-semibold py-2 px-4 rounded-lg">
+            <button className="bg-[#C3A366] bg-[#786033] text-white text-xs font-semibold py-2 px-4 rounded-lg">
               Add to cart
             </button>
           </div>
