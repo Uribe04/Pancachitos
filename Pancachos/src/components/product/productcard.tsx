@@ -1,59 +1,81 @@
-export default function ProductCard() {
+
+type Product = {
+  id: number;
+  name: string;
+  rating: number;
+  tags: string[];
+  description: string;
+  price: number;
+  image: string;
+  brand: string;
+};
+
+export function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="bg-gray-200 min-h-screen flex items-center justify-center p-6">
-      {/* Tarjeta */}
-      <div className="bg-white rounded-2xl shadow-lg w-64 overflow-hidden">
-        {/* Imagen */}
-        <div className="relative">
-          <img
-            src="https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg"
-            alt="Seasoned bread"
-            className="w-full h-40 object-cover"
-          />
-          <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
-            ★ 3.9
-          </div>
-          <button className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 hover:bg-white">
-            ♡
-          </button>
+    <div className="bg-white rounded-xl shadow-md w-72 overflow-hidden hover:shadow-lg transition">
+      {/* Imagen del producto */}
+      <div className="relative">
+        <img
+          src={product.image}
+          alt={product.name}
+          className="w-full h-44 object-cover"
+        />
+
+        {/* Rating */}
+        <div className="absolute top-2 left-2 bg-black/70 text-white text-sm px-2 py-1 rounded-full flex items-center gap-1">
+          ⭐ {product.rating}
         </div>
 
-        {/* Contenido */}
-        <div className="p-4">
-          <div className="flex justify-between items-start mb-2">
-            <h3 className="font-semibold text-gray-800 text-sm leading-tight">
-              Seasoned bread
-            </h3>
-            <div className="bg-[#C3A366] border-[#786033] text-gray-100 font-semibold rounded-full text-xs px-2 py-1">
-              Panaderia paola
-            </div>
-          </div>
+        {/* Corazón */}
+        <button className="absolute top-2 right-2 bg-white/70 rounded-full p-1">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-5 w-5 text-gray-600"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M21 8.25c0-2.485-2.015-4.5-4.5-4.5a4.48 4.48 0 0 0-3.364 1.514A4.48 4.48 0 0 0 9.772 3.75C7.287 3.75 5.25 5.765 5.25 8.25c0 5.25 6.75 9 6.75 9s6.75-3.75 6.75-9Z"
+            />
+          </svg>
+        </button>
+      </div>
 
-          {/* Tags */}
-          <div className="flex gap-2 mb-3">
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border">
-              Medium
-            </span>
-            <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border">
-              Warm
-            </span>
-          </div>
+      {/* Info del producto */}
+      <div className="p-4 space-y-2">
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-bold">{product.name}</h3>
+          <img
+            src={product.brand}
+            alt="brand"
+            className="w-16 h-auto object-contain"
+          />
+        </div>
 
-          {/* Descripción */}
-          <p className="text-xs text-gray-500 leading-tight mb-4">
-            Soft, spongy, and slightly sweet bread, made with wheat flour, egg,
-            and dairy.
+        <div className="flex gap-2">
+          {product.tags.map((tag, i) => (
+            <span
+              key={i}
+              className="text-sm border border-yellow-800 px-3 py-1 rounded-full text-gray-700"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        <p className="text-gray-500 text-sm">{product.description}</p>
+
+        <div className="flex justify-between items-center pt-2">
+          <p className="text-black font-semibold text-md">
+            ${product.price} COP
           </p>
-
-          {/* Precio y botón */}
-          <div className="flex items-center justify-between">
-            <span className="font-semibold text-gray-800 text-sm">
-              $ 2000 COP
-            </span>
-            <button className="bg-[#C3A366] bg-[#786033] text-white text-xs font-semibold py-2 px-4 rounded-lg">
-              Add to cart
-            </button>
-          </div>
+          <button className="bg-[#C8A46B] hover:bg-[#b4915f] text-white text-sm font-semibold py-2 px-4 rounded-lg">
+            Add to cart
+          </button>
         </div>
       </div>
     </div>

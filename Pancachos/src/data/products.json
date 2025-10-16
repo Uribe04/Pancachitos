@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "name": "Pancacho",
+    "rating": 4.5,
+    "tags": ["Medium", "Warm"],
+    "description": "Soft, spongy, and slightly sweet bread, made with wheat flour, egg, and dairy.",
+    "price": 500,
+    "image": "https://images.pexels.com/photos/140831/pexels-photo-140831.jpeg",
+    "brand": "https://i.imgur.com/0Y7LZLz.png"
+  },
+  {
+    "id": 2,
+    "name": "Seasoned bread",
+    "rating": 3.9,
+    "tags": ["Medium", "Warm"],
+    "description": "Soft, spongy, and slightly sweet bread, made with wheat flour, egg, and dairy.",
+    "price": 2000,
+    "image": "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg",
+    "brand": "https://i.imgur.com/0Y7LZLz.png"
+  },
+  {
+    "id": 3,
+    "name": "Buñuelos",
+    "rating": 4.5,
+    "tags": ["Small", "Warm"],
+    "description": "Fried dough, crispy on the outside and soft on the inside, made with cheese, wheat flour, egg and dairy.",
+    "price": 400,
+    "image": "https://images.pexels.com/photos/18763060/pexels-photo-18763060.jpeg",
+    "brand": "https://i.imgur.com/0Y7LZLz.png"
+  },
+  {
+    "id": 4,
+    "name": "Pandebonos",
+    "rating": 4.2,
+    "tags": ["Small", "Warm"],
+    "description": "Baked dough, golden and slightly crispy on the outside, soft and airy on the inside, made with cassava starch, cheese, egg, and a touch of milk.",
+    "price": 400,
+    "image": "https://images.pexels.com/photos/19738169/pexels-photo-19738169.jpeg",
+    "brand": "https://i.imgur.com/0Y7LZLz.png"
+  },
+  {
+    "id": 5,
+    "name": "Cookies",
+    "rating": 4.7,
+    "tags": ["Sweet", "Warm"],
+    "description": "Crispy on the outside and soft on the inside, with chocolate chunks that melt with every bite.",
+    "price": 5000,
+    "image": "https://images.pexels.com/photos/230325/pexels-photo-230325.jpeg",
+    "brand": "https://i.imgur.com/0Y7LZLz.png"
+  }
+]
