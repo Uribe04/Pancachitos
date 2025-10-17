@@ -13,8 +13,7 @@ const Banner: React.FC = () => {
           className="w-full max-w-[480px] sm:max-w-[700px] h-auto object-contain"
         />
 
-        {/* Botón sobrepuesto */}
-        <button className="absolute bottom-[-10px] sm:bottom-[-15px] bg-[#C3A366] hover:bg-[#c5974e] text-white font-semibold px-8 py-3 sm:px-10 sm:py-3 rounded-lg shadow-md transition-all text-sm sm:text-base">
+        <button className="cursor-pointer absolute bottom-[-10px] sm:bottom-[-15px] bg-[#C3A366] hover:bg-[#c5974e] text-white font-semibold px-8 py-3 sm:px-10 sm:py-3 rounded-lg shadow-md transition-all text-sm sm:text-base">
           SHOW MORE
         </button>
       </div>
