@@ -1,9 +1,19 @@
+// ============================================
+// SLIDEBAR / CAROUSEL COMPONENT
+// Muestra carruseles separados por panadería
+// ============================================
+
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import ProductCard from '../product/productcard.tsx';
-import type { Product } from '../../types/product';
+import ProductCard from '../product/productcard';
+// 🔴 IMPORTANTE: Ajusta la ruta según tu estructura de carpetas
 import productsData from '../../data/products.json';
+import type { Product } from '../../types/product';
 
+// ============================================
+// CONFIGURACIÓN DE PANADERÍAS
+// 🔴 REEMPLAZAR logos con tus imágenes reales
+// ============================================
 const BAKERIES = [
   {
     name: 'Xocolata',
@@ -28,8 +38,9 @@ const BAKERIES = [
   }
 ];
 
+// ============================================
 // COMPONENTE DE CARRUSEL INDIVIDUAL
-
+// ============================================
 interface BakeryCarouselProps {
   bakeryName: string;
   bakeryLogo: string;
@@ -70,7 +81,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
 
         {/* Carrusel de productos */}
         <div className="relative">
-          {/* Botón izquierdo - */}
+          {/* Botón izquierdo - 🎨 Personaliza estilos aquí */}
           <button
             onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
@@ -79,7 +90,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
             <ChevronLeft className="w-6 h-6 text-gray-800" />
           </button>
 
-          {/* Container de cards */}
+          {/* Container de cards - 📱 Responsive: scroll horizontal en mobile */}
           <div
             ref={scrollContainerRef}
             className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-12"
@@ -90,7 +101,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
             ))}
           </div>
 
-          {/* Botón derecho */}
+          {/* Botón derecho - 🎨 Personaliza estilos aquí */}
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
@@ -100,7 +111,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
           </button>
         </div>
 
-        {/* Botón "Ver más"-  agregar navegación a página de la panadería */}
+        {/* Botón "Ver más" - 💡 Aquí puedes agregar navegación a página de la panadería */}
         <div className="text-center mt-8">
           <button 
             className="bg-[#C3A366] hover:bg-[#786033] text-white font-semibold py-3 px-8 rounded-lg transition-colors"
@@ -121,12 +132,23 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
   );
 }
 
+// ============================================
 // COMPONENTE PRINCIPAL
+// ============================================
 export default function ProductCarousels() {
   const products = productsData as Product[];
 
   return (
     <div className="bg-[#F5E6D3]">
+      {/* Header principal - 🎨 Personaliza título y descripción */}
+      <div className="text-center py-12 px-4">
+        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
+          Nuestras Panaderías
+        </h1>
+        <p className="text-lg text-gray-600">
+          Productos frescos y deliciosos de las mejores panaderías
+        </p>
+      </div>
 
       {/* Renderiza un carrusel por cada panadería */}
       {BAKERIES.map((bakery) => {
@@ -151,3 +173,13 @@ export default function ProductCarousels() {
     </div>
   );
 }
+
+// ============================================
+// 📝 NOTAS IMPORTANTES:
+// ============================================
+// 1. 🔴 REEMPLAZAR logos en el array BAKERIES (líneas 17-38)
+// 2. 🔴 REEMPLAZAR bakeryLogo en products.json
+// 3. 🎨 Personalizar colores en bgColor de cada panadería
+// 4. 💡 Agregar funcionalidad a botones "Ver más" (línea 112)
+// 5. 📱 El carrusel es responsive automáticamente
+// 6. 🎯 Ajustar scrollAmount (línea 57) para cambiar velocidad

@@ -2,7 +2,7 @@ export interface Product {
   id: number;
   name: string;
   bakery: string;
-  bakeryLogo?: string; // 🔴 REEMPLAZAR con tu logo real
+  bakeryLogo: string;
   price: number;
   rating: number;
   size: string;
@@ -14,6 +14,6 @@ export interface Product {
 
 export interface Bakery {
   name: string;
-  logo: string; // 🔴 REEMPLAZAR con tu logo real
+  logo: string;
   description?: string;
 }

@@ -1,6 +1,7 @@
 import './App.css'
-import { ProductCard } from './components/product/productcard';
 import products from "./data/products.json";
+import ProductCard from './components/product/productcard';
+
 
 export default function ProductList() {
   return (
