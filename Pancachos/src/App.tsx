@@ -1,14 +1,15 @@
-
-
 import './App.css'
-import Navbar from "./components/layout/navbar";
+import Banner from './components/layout/banner'
 
 function App() {
+
+
   return (
-    <div>
-      <Navbar />    
-    </div>
-  );
+    <>
+     <Banner/>
+
+    </>
+  )
 }
 
 export default App;
