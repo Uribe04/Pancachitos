@@ -10,7 +10,7 @@ type Product = {
   brand: string;
 };
 
-export function ProductCard({ product }: { product: Product }) {
+export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="bg-white rounded-xl shadow-md w-72 overflow-hidden hover:shadow-lg transition">
       {/* Imagen del producto */}
@@ -81,3 +81,4 @@ export function ProductCard({ product }: { product: Product }) {
     </div>
   );
 }
+

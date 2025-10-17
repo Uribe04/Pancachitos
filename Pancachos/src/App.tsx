@@ -1,12 +1,12 @@
 import './App.css'
-import Banner from './components/layout/banner'
+import Home from './pages/home/home';
 
 function App() {
 
 
   return (
     <>
-     <Banner/>
+     <Home/>
 
     </>
   )

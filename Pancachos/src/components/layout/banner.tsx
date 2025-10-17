@@ -1,9 +1,9 @@
-
+import Navbar from "./navbar";
 
 const Banner = () => {
   return (
     <div className="relative w-full h-60 sm:h-[520px] flex items-center justify-center bg-gradient-to-r from-[#2971B9] to-[#69ADF1] overflow-hidden">
-      
+      <Navbar/>
       {/* Contenedor principal */}
       <div className="relative w-full h-full  px-4 sm:px-8">
 
