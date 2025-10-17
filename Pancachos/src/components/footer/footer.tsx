@@ -4,24 +4,26 @@ const Footer = () => {
   return (
     <footer className="w-full text-white bg-gradient-to-r from-[#2971B9] to-[#69ADF1]">
       {/* Contenedor principal */}
-      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-10">
-        <div className="flex flex-col lg:flex-row justify-between gap-12">
-          {/* IZQUIERDA: Marca + contacto */}
-          <div className="flex-1 space-y-6">
-            <div className="space-y-3">
-              <h3 className="text-2xl font-black">PANCACHITO'S</h3>
-              <p className="text-blue-100 text-sm leading-relaxed max-w-xs">
+      <div className="max-w-7xl mx-auto px-6 sm:px-10 py-4 sm:py-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between gap-4 sm:gap-8">
+          
+          {/* Marca + contacto */}
+          <div className="space-y-3 sm:space-y-4 text-left">
+            <div className="space-y-1 sm:space-y-2">
+              <h3 className="text-xl sm:text-2xl font-black">PANCACHITO'S</h3>
+              <p className="text-blue-100 text-xs sm:text-sm leading-relaxed max-w-xs">
                 Bakery distributor in Cali. Quality and freshness guaranteed.
               </p>
             </div>
 
             {/* Contacto */}
-            <div className="flex flex-wrap items-center gap-4">
+            <div className="flex flex-col gap-1.5 sm:gap-2">
+              
               {/* Location */}
               <div className="flex items-center gap-2">
-                <div className="bg-[#ffffff33] p-1.5 rounded">
+                <div className="bg-[#ffffff33] p-[3px] rounded">
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -40,14 +42,16 @@ const Footer = () => {
                     />
                   </svg>
                 </div>
-                <span className="text-blue-100 text-xs">Cali, Colombia</span>
+                <span className="text-blue-100 text-[11px] sm:text-xs">
+                  Cali, Colombia
+                </span>
               </div>
 
               {/* Phone */}
               <div className="flex items-center gap-2">
-                <div className="bg-[#ffffff33] p-1.5 rounded">
+                <div className="bg-[#ffffff33] p-[3px] rounded">
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -62,7 +66,7 @@ const Footer = () => {
                 </div>
                 <a
                   href="tel:+571234567890"
-                  className="text-blue-100 hover:text-white transition-colors text-xs"
+                  className="text-blue-100 hover:text-white transition-colors text-[11px] sm:text-xs"
                 >
                   +57 123 456 7890
                 </a>
@@ -70,9 +74,9 @@ const Footer = () => {
 
               {/* Email */}
               <div className="flex items-center gap-2">
-                <div className="bg-[#ffffff33] p-1.5 rounded">
+                <div className="bg-[#ffffff33] p-[3px] rounded">
                   <svg
-                    className="w-4 h-4"
+                    className="w-3.5 h-3.5 sm:w-4 sm:h-4"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -87,49 +91,36 @@ const Footer = () => {
                 </div>
                 <a
                   href="mailto:pancachitos.bakery@gmail.com"
-                  className="text-blue-100 hover:text-white transition-colors text-xs"
+                  className="text-blue-100 hover:text-white transition-colors text-[11px] sm:text-xs"
                 >
                   pancachitos.bakery@gmail.com
                 </a>
               </div>
-
-              {/* Redes sociales */}
-              <div className="flex gap-2">
-                {["Facebook", "Twitter", "YouTube"].map((social) => (
-                  <a
-                    key={social}
-                    href="#"
-                    className="bg-[#ffffff33] hover:bg-[#ffffff55] text-white p-1.5 rounded transition-colors"
-                    aria-label={social}
-                  >
-                    <svg
-                      className="w-4 h-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle cx="12" cy="12" r="10" />
-                    </svg>
-                  </a>
-                ))}
-              </div>
             </div>
           </div>
 
-          {/* DERECHA: Columnas de navegación */}
-          <div className="flex flex-wrap justify-start lg:justify-end gap-12 w-full lg:w-auto">
+          {/* Navegación */}
+          <div className="hidden sm:flex justify-center sm:justify-end gap-8 w-full lg:w-auto text-left">
             {[
-              { title: "Navigation", items: ["Home", "Pages", "About Us", "Services"] },
-              { title: "Quick Link", items: ["Contact Us", "FAQs", "Booking", "Pages"] },
-              { title: "Services", items: ["Home", "Contact", "Blog", "Cart"] },
+              {
+                title: "Navigation",
+                items: ["Home", "Pages", "About Us", "Services"],
+              },
+              {
+                title: "Quick Links",
+                items: ["Contact Us", "FAQs", "Pages"],
+              },
             ].map((section) => (
               <div key={section.title}>
-                <h4 className="text-sm font-bold mb-3">{section.title}</h4>
-                <ul className="space-y-2">
+                <h4 className="text-xs sm:text-sm font-bold mb-2 sm:mb-2">
+                  {section.title}
+                </h4>
+                <ul className="space-y-1">
                   {section.items.map((item) => (
                     <li key={item}>
                       <a
                         href="#"
-                        className="text-blue-100 hover:text-white transition-colors text-xs"
+                        className="text-blue-100 hover:text-white transition-colors text-[11px] sm:text-xs"
                       >
                         {item}
                       </a>
@@ -143,9 +134,9 @@ const Footer = () => {
       </div>
 
       {/* Línea inferior */}
-      <div className="bg-[#C3A366]">
-        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-4">
-          <p className="text-white text-center text-sm">
+      <div className="bg-[#C3A366] mt-3 sm:mt-6">
+        <div className="max-w-7xl mx-auto px-6 sm:px-10 py-2 sm:py-3">
+          <p className="text-white text-center text-[11px] sm:text-sm">
             © 2025 Pancachito's - All Rights Reserved
           </p>
         </div>
