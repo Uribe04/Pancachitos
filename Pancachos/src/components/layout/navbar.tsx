@@ -40,10 +40,10 @@ function Navbar() {
 
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
-        <NavLink to={"/Carts"}>
+      
 
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
-        </NavLink>
+       
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
         <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
           MY PRODUCTS
