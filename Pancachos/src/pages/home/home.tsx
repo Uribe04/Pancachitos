@@ -1,24 +1,17 @@
-import Banner from "../../components/layout/banner";
-import ProductCard from "../../components/product/productcard";
+import Banner from "../../components/layout/banner"; 
 import ProductFilter from "../../components/product/productfilter";
 import Footer from "../../components/footer/footer";
-import product from '../../data/products.json'
+import ProductCarousels from "../../components/layout/slidebar";
+
 function Home() {
-
-
   return (
-    <>
-     <Banner/>
-        <ProductFilter/>
-        <div>
-        {product.map((item) => (
-            <ProductCard key={item.id} product={item}/>
-        ))}
-        <Footer/>
-        </div>
-
-    </>
-  )
+    <div className="bg-[#FBEFD5] min-h-screen">
+      <Banner />
+      <ProductFilter />
+      <ProductCarousels />
+      <Footer />
+    </div>
+  );
 }
 
 export default Home;
