@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import {
   FaBars,
   FaSearch,
@@ -8,7 +9,6 @@ import {
   FaEnvelope,
 } from "react-icons/fa";
 
-
 function Navbar() {
   const [open, setOpen] = useState(false);
 
@@ -17,15 +17,12 @@ function Navbar() {
       {/* Sección izquierda */}
       <div className="flex items-center gap-3 flex-1">
         {/* Botón menú */}
-        
-
         <button
           onClick={() => setOpen(!open)}
           className="text-[#D7B77C] text-2xl focus:outline-none hover:scale-110 transition-transform cursor-pointer"
-          >
+        >
           <FaBars />
         </button>
-         
 
         {/* Barra de búsqueda */}
         <div className="flex items-center bg-[#FAEFD5] rounded-full px-4 py-2 w-full max-w-md shadow-inner">
@@ -40,10 +37,7 @@ function Navbar() {
 
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
-      
-
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
-       
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
         <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
           MY PRODUCTS
@@ -53,15 +47,24 @@ function Navbar() {
       {/* Menú desplegable */}
       {open && (
         <div className="absolute top-16 left-0 w-full sm:w-64 bg-[#FAEFD5] rounded-2xl shadow-lg p-4 flex flex-col gap-3 z-50 transition-all">
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          {/* Link a Home */}
+          <Link
+            to="/"
+            onClick={() => setOpen(false)}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          >
             Home
-          </button>
+          </Link>
+
+          {/* Los siguientes se pueden activar cuando tengas las páginas */}
           <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
             My messages <FaEnvelope />
           </button>
+
           <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
             Profile <FaUser />
           </button>
+
           <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
             My favorites <FaHeart />
           </button>
