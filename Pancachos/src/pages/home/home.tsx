@@ -2,7 +2,7 @@ import Banner from "../../components/layout/banner";
 import ProductCard from "../../components/product/productcard";
 import ProductFilter from "../../components/product/productfilter";
 import Footer from "../../components/footer/footer";
-
+import product from '../../data/products.json'
 function Home() {
 
 
@@ -10,16 +10,7 @@ function Home() {
     <>
      <Banner/>
         <ProductFilter/>
-        <ProductCard product={{
-              id: 0,
-              name: "",
-              rating: 0,
-              tags: [],
-              description: "",
-              price: 0,
-              image: "",
-              brand: ""
-          }}/>
+        <ProductCard product={product}/>
         <Footer/>
 
     </>
