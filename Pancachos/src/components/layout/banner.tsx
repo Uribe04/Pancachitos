@@ -1,27 +1,39 @@
 import React from "react";
 
-const Banner: React.FC = () => {
+const Banner = () => {
   return (
-    <section className="relative w-full flex flex-col items-center justify-center bg-gradient-to-r from-[#2971B9] to-[#69ADF1] py-10 sm:py-14 px-4 sm:px-8">
+    <div className="relative w-full h-60 sm:h-[520px] flex items-center justify-center bg-gradient-to-r from-[#2971B9] to-[#69ADF1] overflow-hidden">
       
-      <div className="relative flex flex-col items-center justify-center text-center w-full max-w-5xl">
-        
-        {/* Imagen */}
-        <img
-          src="/images/Logo banner.png"
-          alt="Banner principal"
-          className="w-full max-w-[480px] sm:max-w-[700px] h-auto object-contain"
-        />
+      {/* Contenedor principal */}
+      <div className="relative w-full h-full  px-4 sm:px-8">
 
-        <button className="cursor-pointer absolute bottom-[-10px] sm:bottom-[-15px] bg-[#C3A366] hover:bg-[#c5974e] text-white font-semibold px-8 py-3 sm:px-10 sm:py-3 rounded-lg shadow-md transition-all text-sm sm:text-base">
+       
+        <div className="absolute bottom-0 lg:right-35 sm:w-[85%] md:w-[75%] lg:w-[70%] h-auto object-contain">
+          <img
+            src="/images/Banner.png"
+            alt="Banner principal"
+            className="w-full h-auto object-contain"
+          />
+        </div>
+
+        {/* Botón responsive */}
+        <button
+          className="absolute left-[25%] transform -translate-x-1/2 
+                     bottom-6 sm:bottom-8 md:bottom-10 lg:bottom-15
+                     bg-[#C3A366] hover:bg-[#c5974e] 
+                     text-white font-semibold px-6 py-2 sm:px-8 sm:py-3 md:px-10 md:py-4 rounded-lg shadow-lg transition-all text-sm sm:text-base md:text-lg"
+        >
           SHOW MORE
         </button>
       </div>
-    </section>
+    </div>
   );
 };
 
 export default Banner;
+
+
+
 
 
 
