@@ -1,15 +1,13 @@
-import { useState } from 'react'
 import './App.css'
-import ProductCarousels from './components/layout/slidebar';
+import { ProductCard } from './components/product/productcard';
+import products from "./data/products.json";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+export default function ProductList() {
   return (
-    <>
-      <ProductCarousels />
-    </>
-  )
+    <div className="flex flex-wrap gap-6 justify-center p-10 bg-gray-100">
+      {products.map((p) => (
+        <ProductCard key={p.id} product={p} />
+      ))}
+    </div>
+  );
 }
-
-export default App
