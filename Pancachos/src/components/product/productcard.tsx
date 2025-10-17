@@ -1,11 +1,8 @@
-// ============================================
+
 // PRODUCT CARD COMPONENT - Componente reutilizable
-// ============================================
 
 import type { Product } from "../../types/product";
 import { useState } from 'react';
-
-
 
 interface ProductCardProps {
   product: Product;
@@ -25,12 +22,12 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="w-full h-40 object-cover"
         />
         
-        {/* Rating badge - 🎨 Personaliza colores aquí */}
+        {/* Rating badge */}
         <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
           ★ {product.rating}
         </div>
         
-        {/* Botón favorito - 💡 Aquí puedes agregar funcionalidad de favoritos */}
+        {/* Botón favorito*/}
         <button
   className={`absolute top-2 right-2 rounded-full p-1 transition-colors ${
     favorite ? 'bg-blue-100 text-blue-500' : ' text-gray-700'
@@ -50,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
             {product.name}
           </h3>
           
-          {/* Logo de panadería - 🔴 Reemplaza bakeryLogo en products.json */}
+          {/* Logo de panadería */}
           {product.bakeryLogo ? (
             <img 
               src={product.bakeryLogo} 
@@ -64,7 +61,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           )}
         </div>
 
-        {/* Tags de tamaño y temperatura - 🎨 Personaliza estilos aquí */}
+        {/* Tags de tamaño y temperatura */}
         <div className="flex gap-2 mb-3">
           <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border">
             {product.size}
@@ -85,10 +82,10 @@ export default function ProductCard({ product }: ProductCardProps) {
             $ {product.price.toLocaleString()} COP
           </span>
           
-          {/* Botón Add to cart - 💡 Aquí puedes agregar funcionalidad del carrito */}
+          {/* Botón Add to cart*/}
           <button
   className={`${
-    added ? 'bg-green-500 hover:bg-green-600' : 'bg-[#C3A366] hover:bg-[#786033]'
+    added ? 'bg-[#786033]' : 'bg-[#C3A366] hover:bg-[#786033]'
   } text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors`}
   onClick={() => setAdded(true)}
   disabled={added}

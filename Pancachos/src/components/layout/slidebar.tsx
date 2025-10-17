@@ -1,57 +1,43 @@
-// ============================================
 // SLIDEBAR / CAROUSEL COMPONENT
 // Muestra carruseles separados por panadería
-// ============================================
 
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-// 🔴 IMPORTANTE: Ajusta la ruta según tu estructura de carpetas
 import productsData from '../../data/products.json';
 import type { Product } from '../../types/product';
 import ProductCard from '../product/productcard';
 
-// ============================================
 // CONFIGURACIÓN DE PANADERÍAS
-// 🔴 REEMPLAZAR logos con tus imágenes reales
-// ============================================
 const BAKERIES = [
   {
     name: 'Xocolata',
-    logo: 'https://via.placeholder.com/120x60/8B4513/FFFFFF?text=XOCOLATA',
-    // 🎨 Personaliza colores de fondo aquí
-    bgColor: 'bg-[#F5E6D3]'
-  },
+    logo: '/images/bakerys/xocolata.png',
+    },
   {
     name: 'Paola',
-    logo: 'https://via.placeholder.com/120x60/FF6B35/FFFFFF?text=PAOLA',
-    bgColor: 'bg-[#FFF5F0]'
+    logo: '/images/bakerys/paola.png',
   },
   {
     name: 'Pandeli',
-    logo: 'https://via.placeholder.com/120x60/D4A574/FFFFFF?text=PANDELI',
-    bgColor: 'bg-[#FFF8E7]'
+    logo: '/images/bakerys/pandeli.png',
   },
   {
     name: 'Aser Pan',
-    logo: 'https://via.placeholder.com/120x60/2C3E50/FFFFFF?text=ASER+PAN',
-    bgColor: 'bg-[#F0F4F8]'
+    logo: '/images/bakerys/aser.png',
   }
 ];
 
-// ============================================
 // COMPONENTE DE CARRUSEL INDIVIDUAL
-// ============================================
 interface BakeryCarouselProps {
   bakeryName: string;
   bakeryLogo: string;
   products: Product[];
-  bgColor: string;
 }
 
-function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCarouselProps) {
+function BakeryCarousel({ bakeryName, bakeryLogo, products,}: BakeryCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Función para hacer scroll - 🎨 Ajusta scrollAmount para cambiar velocidad
+  // Función para hacer scroll 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
     
@@ -67,33 +53,32 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
   };
 
   return (
-    <section className={`${bgColor} py-12 px-4`}>
+    <section className={"py-12 px-4"}>
       <div className="max-w-7xl mx-auto">
         {/* Header con logo y nombre de panadería */}
         <div className="flex items-center justify-center gap-4 mb-8">
-          {/* Logo de panadería - 🔴 REEMPLAZAR en el array BAKERIES */}
           <img 
             src={bakeryLogo} 
             alt={bakeryName}
-            className="h-12 md:h-16 object-contain"
+            className="h-15 md:h-19 object-contain"
           />
         </div>
 
         {/* Carrusel de productos */}
         <div className="relative">
-          {/* Botón izquierdo - 🎨 Personaliza estilos aquí */}
+          {/* Botón izquierdo */}
           <button
             onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
             aria-label="Scroll left"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-800" />
+            <ChevronLeft className="w-6 h-6 text-gray-500" />
           </button>
 
-          {/* Container de cards - 📱 Responsive: scroll horizontal en mobile */}
+          {/* Container de cards - Responsive: scroll horizontal en mobile */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-12"
+            className="flex gap-8 overflow-x-auto scrollbar-hide scroll-smooth px-18"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {products.map((product) => (
@@ -101,7 +86,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
             ))}
           </div>
 
-          {/* Botón derecho - 🎨 Personaliza estilos aquí */}
+          {/* Botón derecho */}
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
@@ -111,13 +96,13 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
           </button>
         </div>
 
-        {/* Botón "Ver más" - 💡 Aquí puedes agregar navegación a página de la panadería */}
+        {/* Botón "Ver más"  */}
         <div className="text-center mt-8">
           <button 
             className="bg-[#C3A366] hover:bg-[#786033] text-white font-semibold py-3 px-8 rounded-lg transition-colors"
             onClick={() => console.log('Ver más de:', bakeryName)}
           >
-            Ver más productos de {bakeryName} →
+            See more products from {bakeryName} →
           </button>
         </div>
       </div>
@@ -132,22 +117,17 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, bgColor }: BakeryCar
   );
 }
 
-// ============================================
+
 // COMPONENTE PRINCIPAL
-// ============================================
 export default function ProductCarousels() {
   const products = productsData as Product[];
 
   return (
-    <div className="bg-[#F5E6D3]">
-      {/* Header principal - 🎨 Personaliza título y descripción */}
+    <div>
       <div className="text-center py-12 px-4">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-800 mb-4">
-          Nuestras Panaderías
+        <h1 className="text-4xl md:text-5xl font-bold text-[#786033] mb-4">
+          Our bakeries!
         </h1>
-        <p className="text-lg text-gray-600">
-          Productos frescos y deliciosos de las mejores panaderías
-        </p>
       </div>
 
       {/* Renderiza un carrusel por cada panadería */}
@@ -162,12 +142,10 @@ export default function ProductCarousels() {
 
         return (
           <BakeryCarousel
-            key={bakery.name}
-            bakeryName={bakery.name}
-            bakeryLogo={bakery.logo}
-            products={bakeryProducts}
-            bgColor={bakery.bgColor}
-          />
+                key={bakery.name}
+                bakeryName={bakery.name}
+                bakeryLogo={bakery.logo}
+                products={bakeryProducts} />
         );
       })}
     </div>
