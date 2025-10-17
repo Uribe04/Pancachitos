@@ -7,7 +7,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-6 sm:px-10 py-4 sm:py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between gap-4 sm:gap-8">
           
-          {/* Marca + contacto */}
+          {/* Marca */}
           <div className="space-y-3 sm:space-y-4 text-left">
             <div className="space-y-1 sm:space-y-2">
               <h3 className="text-xl sm:text-2xl font-black">PANCACHITO'S</h3>
@@ -99,7 +99,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Navegación */}
+          {/* Navegation */}
           <div className="hidden sm:flex justify-center sm:justify-end gap-8 w-full lg:w-auto text-left">
             {[
               {
