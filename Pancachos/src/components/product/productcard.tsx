@@ -3,6 +3,7 @@
 // ============================================
 
 import type { Product } from "../../types/product";
+import { useState } from 'react';
 
 
 
@@ -11,6 +12,9 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+    const [added, setAdded] = useState(false);
+  const [favorite, setFavorite] = useState(false);
+
   return (
     <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Imagen del producto */}
@@ -27,12 +31,15 @@ export default function ProductCard({ product }: ProductCardProps) {
         </div>
         
         {/* Botón favorito - 💡 Aquí puedes agregar funcionalidad de favoritos */}
-        <button 
-          className="absolute top-2 right-2 bg-white/80 text-gray-700 rounded-full p-1 hover:bg-white"
-          onClick={() => console.log('Favorito:', product.name)}
-        >
-          ♡
-        </button>
+        <button
+  className={`absolute top-2 right-2 rounded-full p-1 transition-colors ${
+    favorite ? 'bg-blue-100 text-blue-500' : ' text-gray-700'
+  }`}
+  onClick={() => setFavorite(!favorite)}
+>
+  {favorite ? '💙' : '🤍'}
+</button>
+
       </div>
 
       {/* Contenido de la card */}
@@ -79,12 +86,16 @@ export default function ProductCard({ product }: ProductCardProps) {
           </span>
           
           {/* Botón Add to cart - 💡 Aquí puedes agregar funcionalidad del carrito */}
-          <button 
-            className="bg-[#C3A366] hover:bg-[#786033] text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors"
-            onClick={() => console.log('Agregado al carrito:', product.name)}
-          >
-            Add to cart
-          </button>
+          <button
+  className={`${
+    added ? 'bg-green-500 hover:bg-green-600' : 'bg-[#C3A366] hover:bg-[#786033]'
+  } text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors`}
+  onClick={() => setAdded(true)}
+  disabled={added}
+>
+  {added ? 'Added' : 'Add to cart'}
+</button>
+
         </div>
       </div>
     </div>

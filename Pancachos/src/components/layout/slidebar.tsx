@@ -5,10 +5,10 @@
 
 import { useRef } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import ProductCard from '../product/productcard';
 // 🔴 IMPORTANTE: Ajusta la ruta según tu estructura de carpetas
 import productsData from '../../data/products.json';
 import type { Product } from '../../types/product';
+import ProductCard from '../product/productcard';
 
 // ============================================
 // CONFIGURACIÓN DE PANADERÍAS
@@ -173,13 +173,3 @@ export default function ProductCarousels() {
     </div>
   );
 }
-
-// ============================================
-// 📝 NOTAS IMPORTANTES:
-// ============================================
-// 1. 🔴 REEMPLAZAR logos en el array BAKERIES (líneas 17-38)
-// 2. 🔴 REEMPLAZAR bakeryLogo en products.json
-// 3. 🎨 Personalizar colores en bgColor de cada panadería
-// 4. 💡 Agregar funcionalidad a botones "Ver más" (línea 112)
-// 5. 📱 El carrusel es responsive automáticamente
-// 6. 🎯 Ajustar scrollAmount (línea 57) para cambiar velocidad
