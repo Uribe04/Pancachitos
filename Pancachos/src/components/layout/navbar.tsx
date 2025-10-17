@@ -7,6 +7,7 @@ import {
   FaHeart,
   FaEnvelope,
 } from "react-icons/fa";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
@@ -16,12 +17,15 @@ function Navbar() {
       {/* Sección izquierda */}
       <div className="flex items-center gap-3 flex-1">
         {/* Botón menú */}
+        
+
         <button
           onClick={() => setOpen(!open)}
           className="text-[#D7B77C] text-2xl focus:outline-none hover:scale-110 transition-transform cursor-pointer"
-        >
+          >
           <FaBars />
         </button>
+         
 
         {/* Barra de búsqueda */}
         <div className="flex items-center bg-[#FAEFD5] rounded-full px-4 py-2 w-full max-w-md shadow-inner">
@@ -36,7 +40,10 @@ function Navbar() {
 
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
+        <NavLink to={"/Carts"}>
+
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
+        </NavLink>
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
         <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
           MY PRODUCTS
