@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import './App.css'
-import ProductCard from './components/product/productcard'
+import ProductCarousels from './components/layout/slidebar';
 
 function App() {
   const [count, setCount] = useState(0)
 
   return (
     <>
-      <ProductCard />
+      <ProductCarousels />
     </>
   )
 }
