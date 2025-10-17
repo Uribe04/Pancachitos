@@ -78,7 +78,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products,}: BakeryCarouselProp
           {/* Container de cards - Responsive: scroll horizontal en mobile */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide scroll-smooth px-18"
+            className="flex gap-8 overflow-x-auto scrollbar-hide scroll-smooth px-8"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {products.map((product) => (

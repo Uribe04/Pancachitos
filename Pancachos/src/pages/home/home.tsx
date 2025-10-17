@@ -10,8 +10,12 @@ function Home() {
     <>
      <Banner/>
         <ProductFilter/>
-        <ProductCard product={product}/>
+        <div>
+        {product.map((item) => (
+            <ProductCard key={item.id} product={item}/>
+        ))}
         <Footer/>
+        </div>
 
     </>
   )
