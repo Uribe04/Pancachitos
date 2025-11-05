@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   FaBars,
   FaSearch,
@@ -38,7 +38,9 @@ function Navbar() {
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
+        <NavLink to="/profile">
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
+        </NavLink>
         <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
           MY PRODUCTS
         </button>
@@ -61,9 +63,11 @@ function Navbar() {
             My messages <FaEnvelope />
           </button>
 
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          <NavLink to="/profile" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          
             Profile <FaUser />
-          </button>
+         
+          </NavLink>
 
           <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
             My favorites <FaHeart />
