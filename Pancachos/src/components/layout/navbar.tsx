@@ -69,9 +69,11 @@ function Navbar() {
          
           </NavLink>
 
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          <NavLink to="/favourites" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+
             My favorites <FaHeart />
-          </button>
+            
+          </NavLink>
         </div>
       )}
     </nav>
