@@ -10,7 +10,21 @@
     "temperature": "Warm",
     "description": "Delicious croissant with chocolate filling, freshly baked with premium butter.",
     "image": "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg",
-    "category": "pastry"
+    "category": "pastry",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@papiChulo3000",
+        "comment": "The Pancacho is absolutely delicious! The bread is soft and fluffy, with just the right touch of sweetness. I love how the crust is golden and slightly crisp, while the inside practically melts in your mouth.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@tuGatitaMiau",
+        "comment": "Love this Pancacho!",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 2,
@@ -23,7 +37,21 @@
     "temperature": "Warm",
     "description": "Traditional cheese bread with a soft and fluffy texture, perfect for breakfast.",
     "image": "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@arequipeLover",
+        "comment": "Perfect with a cup of coffee in the morning. Soft, cheesy, and fresh!",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@panFan",
+        "comment": "A little salty for me, but still good.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 3,
@@ -36,7 +64,21 @@
     "temperature": "Cold",
     "description": "Chocolate chip cookies with a crispy edge and soft center.",
     "image": "https://images.pexels.com/photos/890577/pexels-photo-890577.jpeg",
-    "category": "cookies"
+    "category": "cookies",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@cookieQueen",
+        "comment": "Crispy on the outside and soft inside — exactly how I love my cookies!",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@sweetTooth",
+        "comment": "They taste homemade, delicious flavor.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 4,
@@ -49,7 +91,21 @@
     "temperature": "Cold",
     "description": "Premium chocolate cake with ganache frosting.",
     "image": "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg",
-    "category": "cake"
+    "category": "cake",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@chocoAddict",
+        "comment": "So rich and creamy, the ganache is perfect!",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@cakeLover",
+        "comment": "A bit pricey, but totally worth it.",
+        "rating": 5
+      }
+    ]
   },
   {
     "id": 5,
@@ -62,7 +118,21 @@
     "temperature": "Warm",
     "description": "Crispy on the outside, soft inside. Traditional Colombian buñuelos made fresh daily.",
     "image": "/images/products/buñuelo.png",
-    "category": "fried"
+    "category": "fried",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@colombianBites",
+        "comment": "Authentic taste, reminds me of Christmas mornings!",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@paolita",
+        "comment": "Could be a bit crispier, but still yummy.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 6,
@@ -75,7 +145,21 @@
     "temperature": "Warm",
     "description": "Golden and slightly crispy cheese rolls, baked to perfection with authentic flavor.",
     "image": "/images/products/pandebono.png",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@quesitoLover",
+        "comment": "Soft, cheesy, and warm! My go-to snack every morning.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@cafeConPan",
+        "comment": "Really good flavor, but I prefer them a bit smaller.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 7,
@@ -88,7 +172,21 @@
     "temperature": "Warm",
     "description": "Classic white bread, soft and fresh. Ideal for sandwiches or toast.",
     "image": "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@breakfastBuddy",
+        "comment": "Simple but good quality. Always fresh.",
+        "rating": 4
+      },
+      {
+        "icon": "👤",
+        "username": "@sandiMaker",
+        "comment": "Perfect for sandwiches!",
+        "rating": 5
+      }
+    ]
   },
   {
     "id": 8,
@@ -101,7 +199,21 @@
     "temperature": "Warm",
     "description": "Buttery croissant with layers of flaky pastry.",
     "image": "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg",
-    "category": "pastry"
+    "category": "pastry",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@crispyDreams",
+        "comment": "Amazing texture! It’s flaky and rich, especially when warm.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@miauMuffin",
+        "comment": "Could use a bit more butter flavor, but still great.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 9,
@@ -114,7 +226,21 @@
     "temperature": "Cold",
     "description": "Assorted artisan cookies with chocolate chips, oats, and nuts. Perfect with coffee.",
     "image": "https://images.pexels.com/photos/890577/pexels-photo-890577.jpeg",
-    "category": "cookies"
+    "category": "cookies",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@cookieMonster",
+        "comment": "Love the mix of oats and nuts! Crunchy and soft combo.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@snackAddict",
+        "comment": "A bit too sweet for me, but overall good taste.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 10,
@@ -127,7 +253,21 @@
     "temperature": "Cold",
     "description": "Decadent chocolate cake slice with rich frosting and premium ingredients.",
     "image": "https://images.pexels.com/photos/291528/pexels-photo-291528.jpeg",
-    "category": "cake"
+    "category": "cake",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@postreFan",
+        "comment": "Heavenly chocolate! Super moist and flavorful.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@sugarRush",
+        "comment": "The best cake in town!",
+        "rating": 5
+      }
+    ]
   },
   {
     "id": 11,
@@ -140,7 +280,21 @@
     "temperature": "Warm",
     "description": "Warm cheese bread with a golden crust.",
     "image": "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@panBites",
+        "comment": "Warm and cheesy — I love the aroma when it’s fresh out of the oven!",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@tastyTina",
+        "comment": "Good but a bit dense.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 12,
@@ -153,20 +307,48 @@
     "temperature": "Warm",
     "description": "Traditional fried dough balls with cheese.",
     "image": "/images/products/buñuelo.png",
-    "category": "fried"
+    "category": "fried",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@colSnacks",
+        "comment": "Nice and golden, crunchy outside and soft inside.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@fritangaFan",
+        "comment": "Tasty, but could use a bit more cheese flavor.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 13,
     "name": "Pan normal",
     "bakery": "Aser Pan",
     "bakeryLogo": "/images/bakerys/aser.png",
-    "price": 2000,  
+    "price": 2000,
     "rating": 4.3,
     "size": "Medium",
     "temperature": "Warm",
     "description": "Classic white bread, soft and fresh. Ideal for sandwiches or toast.",
     "image": "https://images.pexels.com/photos/1775043/pexels-photo-1775043.jpeg",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@dailyToast",
+        "comment": "Always soft and smells amazing.",
+        "rating": 4
+      },
+      {
+        "icon": "👤",
+        "username": "@lunchMaker",
+        "comment": "Simple but good quality bread.",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 14,
@@ -179,7 +361,21 @@
     "temperature": "Warm",
     "description": "Buttery croissant with a golden, flaky crust. A breakfast favorite.",
     "image": "https://images.pexels.com/photos/3892469/pexels-photo-3892469.jpeg",
-    "category": "pastry"
+    "category": "pastry",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@panLover",
+        "comment": "Perfectly flaky layers, love it with jam.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@morningBites",
+        "comment": "Not too sweet, just right!",
+        "rating": 4
+      }
+    ]
   },
   {
     "id": 15,
@@ -192,7 +388,21 @@
     "temperature": "Warm",
     "description": "Cheese bread rolls with a crispy exterior.",
     "image": "/images/products/pandebono.png",
-    "category": "bread"
+    "category": "bread",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@snackMate",
+        "comment": "Great with coffee! Fresh and cheesy.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@colombianSoul",
+        "comment": "Authentic flavor, I could eat a dozen!",
+        "rating": 5
+      }
+    ]
   },
   {
     "id": 16,
@@ -205,6 +415,20 @@
     "temperature": "Cold",
     "description": "Homemade cookies with various flavors and toppings.",
     "image": "https://images.pexels.com/photos/890577/pexels-photo-890577.jpeg",
-    "category": "cookies"
+    "category": "cookies",
+    "comments": [
+      {
+        "icon": "👤",
+        "username": "@homebaker",
+        "comment": "Tastes just like homemade! Loved the chocolate chips.",
+        "rating": 5
+      },
+      {
+        "icon": "👤",
+        "username": "@cookieCrush",
+        "comment": "Soft and chewy, but could have more chips.",
+        "rating": 4
+      }
+    ]
   }
 ]
