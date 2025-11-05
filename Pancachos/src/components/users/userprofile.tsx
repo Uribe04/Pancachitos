@@ -1,3 +1,4 @@
+import { NavLink } from "react-router-dom";
 import Navbar from "../layout/navbar";
 
 function UserProfile() {
@@ -30,9 +31,9 @@ function UserProfile() {
 
           {/* Links */}
           <nav className="w-full flex flex-col gap-2 mb-10">
-            <button className="text-left text-sm text-gray-700 hover:text-[#CFA452]">
-              My favorites 💛
-            </button>
+            <NavLink to="/favourites" className="text-left text-sm text-gray-700 hover:text-[#CFA452]">
+              My favorites
+            </NavLink>
             <button className="text-left text-sm text-gray-700 hover:text-[#CFA452]">
               My products
             </button>
