@@ -6,17 +6,18 @@ import { useState } from 'react';
 
 interface ProductCardProps {
   product: Product;
+  Click: ()=> void;
 }
 
-export default function ProductCard({ product }: ProductCardProps) {
+export default function ProductCard({ product, Click }: ProductCardProps) {
     const [added, setAdded] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow" >
       {/* Imagen del producto */}
-      <div className="relative">
-        <img
+      <div className="relative"onClick={()=> Click()}>
+        <img 
           src={product.image}
           alt={product.name}
           className="w-full h-40 object-cover"

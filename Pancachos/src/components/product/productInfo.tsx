@@ -24,6 +24,8 @@ interface Product {
 }
 
 export default function ProductCard({ product }: { product: Product }) {
+
+  
   return (
     <div className="bg-[#FAF0DC] flex flex-col sm:flex-row items-stretch justify-center rounded-2xl shadow-lg overflow-hidden max-w-4xl mx-auto p-4">
 
