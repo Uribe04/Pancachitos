@@ -1,7 +1,7 @@
 // ...existing code...
 import { useEffect, useState } from "react";
-import { addToCart, isInCart, removeFromCart} from "../../redux/cartUtils";
-import type { CartItem } from "../../redux/cartUtils";
+import { addToCart, isInCart, removeFromCart} from "../../utils/cartUtils";
+import type { CartItem } from "../../utils/cartUtils";
 
 interface Comment {
   icon: string;

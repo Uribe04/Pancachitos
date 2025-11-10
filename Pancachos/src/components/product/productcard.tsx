@@ -1,7 +1,7 @@
 
 import type { Product } from "../../types/product";
 import { useEffect, useState } from 'react';
-import { addToCart, isInCart } from "../../redux/cartUtils";
+import { addToCart, isInCart } from "../../utils/cartUtils";
 
 interface ProductCardProps {
   product: Product;
