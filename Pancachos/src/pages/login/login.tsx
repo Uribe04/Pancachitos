@@ -116,12 +116,7 @@ export default function Login() {
                 {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
               </div>
 
-              <div 
-                className="text-right text-xs text-gray-500 hover:text-[#69ADF1] cursor-pointer"
-                onClick={() => navigate("/recover")}
-              >
-                Forgot your password?
-              </div>
+
 
               <button
                 type="submit"
