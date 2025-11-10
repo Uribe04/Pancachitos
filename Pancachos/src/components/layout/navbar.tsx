@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 import {
   FaBars,
   FaSearch,
@@ -38,6 +38,7 @@ function Navbar() {
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
+        <NavLink to="/profile">
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
         {/* MODIFICACIÓN: Agregado Link al botón MY PRODUCTS */}
         <Link to="/myproducts">
@@ -72,13 +73,17 @@ function Navbar() {
             My messages <FaEnvelope />
           </button>
 
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          <NavLink to="/profile" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          
             Profile <FaUser />
-          </button>
+         
+          </NavLink>
 
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+          <NavLink to="/favourites" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
+
             My favorites <FaHeart />
-          </button>
+            
+          </NavLink>
         </div>
       )}
     </nav>
