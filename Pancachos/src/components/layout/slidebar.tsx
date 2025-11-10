@@ -60,6 +60,12 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
     navigate('/seemoreproducts');
   };
 
+  function handleclick (id:Number){
+    navigate(`/product/${id}` , {state: id})
+    console.log("chi");
+    
+  }
+
   return (
     <section className="py-12 px-4">
       <div className="max-w-7xl mx-auto">
@@ -90,7 +96,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {products.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard key={product.id} product={product} Click={() => handleclick(product.id)} />
             ))}
           </div>
 

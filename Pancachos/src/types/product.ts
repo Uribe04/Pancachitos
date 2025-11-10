@@ -16,6 +16,7 @@ export interface Product {
   stock: number;
   reviewCount: number;
   createdAt: string;
+  comments: []
 }
 
 export interface Bakery {
