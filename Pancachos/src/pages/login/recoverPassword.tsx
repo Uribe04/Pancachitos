@@ -45,6 +45,7 @@ export default function RecoverPassword() {
               <button
                 type="submit"
                 className="bg-[#69ADF1] hover:bg-[#4c95e5] text-white font-semibold py-2.5 rounded-full shadow-md transition-transform hover:scale-105 text-sm"
+                onClick={() => navigate("/login")}
               >
                 Send message
               </button>

@@ -1,25 +1,70 @@
 import { useNavigate } from "react-router-dom";
+import {useState } from "react";
+import type { FormEvent} from "react";
 
 export default function Login() {
   const navigate = useNavigate();
+  const [formData, setFormData] = useState({
+    email: '',
+    password: ''
+  });
+  const [errors, setErrors] = useState({
+    email: '',
+    password: ''
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors(prev => ({
+        ...prev,
+        [name]: ''
+      }));
+    }
+  };
+
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+    
+   
+    const newErrors = {
+      email: '',
+      password: ''
+    };
+
+    if (!formData.email) newErrors.email = 'Email is required';
+    if (!formData.password) newErrors.password = 'Password is required';
+
+    if (newErrors.email || newErrors.password) {
+      setErrors(newErrors);
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    navigate("/home");
+  };
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#69ADF1] px-6 sm:px-10">
-      <div
-        className="relative w-full max-w-[850px] md:max-w-[900px] h-auto md:h-[520px] rounded-2xl border-[6px] border-[#d5a84a] overflow-hidden flex items-center justify-center shadow-lg"
+
+      <div className="relative w-full max-w-[850px] md:max-w-[900px] h-auto md:h-[520px] rounded-2xl border-[6px] border-[#d5a84a] overflow-hidden flex items-center justify-center shadow-lg"
         style={{
           backgroundImage: `url('/images/bg login-register.png')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-        }}
-      >
-        {/* capa ligera para contraste */}
+        }}>
         <div className="absolute inset-0 bg-black/10 md:bg-transparent" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-center md:justify-start px-6 md:pl-16 py-10 md:py-0 w-full">
-          {/* Card blanca */}
           <div className="bg-white rounded-2xl shadow-xl w-full sm:w-[380px] md:w-[420px] h-[400px] flex flex-col justify-between items-center text-center p-6 sm:p-8">
-            {/* Logo y título */}
             <div className="flex flex-col items-center">
               <img
                 src="/images/Logo ver 2.png"
@@ -31,35 +76,45 @@ export default function Login() {
               </h2>
             </div>
 
-            {/* Formulario */}
-            <form className="w-full flex flex-col gap-3 text-left">
-              <input
-                type="email"
-                placeholder="Email address"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]"
-              />
+            <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3 text-left">
+              <div className="flex flex-col gap-1">
+                <input
+                  name="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Email address"
+                  className={`w-full border ${errors.email ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]`}
+                />
+                {errors.email && <span className="text-red-500 text-xs">{errors.email}</span>}
+              </div>
 
-              <input
-                type="password"
-                placeholder="Password"
-                className="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]"
-              />
+              <div className="flex flex-col gap-1">
+                <input
+                  name="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Password"
+                  className={`w-full border ${errors.password ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]`}
+                />
+                {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
+              </div>
 
-              <div className="text-right text-xs text-gray-500 hover:text-[#69ADF1] cursor-pointer">
+              <div className="text-right text-xs text-gray-500 hover:text-[#69ADF1] cursor-pointer" onClick={() => navigate("/recover")}>
                 Forgot your password?
               </div>
 
               <button
                 type="submit"
-                className="bg-[#69ADF1] hover:bg-[#4c95e5] text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform hover:scale-105 text-sm"
+                disabled={isSubmitting}
+                className={`bg-[#69ADF1] ${isSubmitting ? 'opacity-50' : 'hover:bg-[#4c95e5]'} text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform ${!isSubmitting && 'hover:scale-105'} text-sm`}
               >
-                Log In
+                {isSubmitting ? 'Logging in...' : 'Log In'}
               </button>
             </form>
 
-            {/* Parte inferior (social + sign up) */}
             <div className="flex flex-col items-center gap-3 mt-2">
-              {/* Login con redes */}
               <div className="flex items-center justify-center gap-3">
                 <button className="border border-gray-300 rounded-full w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
                   <img
@@ -77,11 +132,10 @@ export default function Login() {
                 </button>
               </div>
 
-              {/* Enlace de registro */}
               <p className="text-xs text-gray-600">
-                Don’t have an account?{" "}
+                Don't have an account?{" "}
                 <span
-                  onClick={() => navigate("/Register")}
+                  onClick={() => navigate("/register")}
                   className="text-[#69ADF1] font-semibold cursor-pointer hover:underline"
                 >
                   Sign up
@@ -94,6 +148,5 @@ export default function Login() {
     </div>
   );
 }
-
 
 

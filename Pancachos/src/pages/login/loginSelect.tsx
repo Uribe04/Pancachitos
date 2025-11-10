@@ -31,7 +31,7 @@ export default function LoginSelect() {
 
             <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 w-full">
               <button
-                onClick={() => navigate("/Login")}
+                onClick={() => navigate("/login")}
                 className="bg-[#f9eccc] hover:bg-[#f6e3b9] text-black font-semibold py-3 sm:py-4 px-6 rounded-xl w-full sm:w-[150px] shadow-md hover:scale-105 transition-transform flex flex-col items-center gap-0"
               >
                 <span className="text-sm mt-1">Particular</span>
@@ -39,7 +39,7 @@ export default function LoginSelect() {
               </button>
 
               <button
-                onClick={() => navigate("/Login")}
+                onClick={() => navigate("/login")}
                 className="bg-[#5ea6f2] hover:bg-[#4c95e5] text-white font-semibold py-3 sm:py-4 px-6 rounded-xl w-full sm:w-[150px] shadow-md hover:scale-105 transition-transform flex flex-col items-center gap-0"
               >
                 <span className="text-sm mt-1">Bakery</span>
