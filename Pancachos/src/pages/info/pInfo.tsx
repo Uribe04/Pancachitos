@@ -4,18 +4,16 @@ import products from "../../data/products.json";
 import Navbar from "../../components/layout/navbar";
 import { useLocation } from "react-router-dom";
 
-
 function Info() {
-  const location = useLocation()
+  const location = useLocation();
+  const productId = location.state;
 
-  console.log(location.state);
+  const findItem = products.find((product) => product.id === productId);
 
-  const finditem = products.find((product) => product.id === location.state);
-
-if (!finditem) {
-  console.error("Producto no encontrado");
-  return null; // o puedes redirigir, mostrar error, etc.
-}
+  if (!findItem) {
+    console.error("Producto no encontrado");
+    return null;
+  }
   
   return (
     <div className="min-h-screen flex flex-col items-center">
@@ -26,8 +24,11 @@ if (!finditem) {
 
       {/* Sección principal: producto + comentarios */}
       <div className="w-full bg-[#FBEFD5] flex flex-col items-center gap-10 py-16">
-        <ProductCard product={finditem} />
-        <CommentsSection comments={finditem?.comments || []} />
+        <ProductCard product={findItem} />
+        <CommentsSection 
+          comments={findItem.comments} 
+          productId={findItem.id} 
+        />
       </div>
     </div>
   );

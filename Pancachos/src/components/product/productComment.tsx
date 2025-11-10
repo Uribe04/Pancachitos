@@ -1,8 +1,5 @@
 import { useState, useEffect } from "react";
 
-
-
-
 interface Comment {
   icon?: string;
   username: string;
@@ -10,8 +7,14 @@ interface Comment {
   rating: number;
 }
 
-export default function CommentsSection({ comments }: { comments: Comment[] }) {
+interface CommentsProps {
+  comments: Comment[];
+  productId: number;
+}
+
+export default function CommentsSection({ comments, productId }: CommentsProps) {
   const DEFAULT_ICON = "/images/IconUser.png";
+  const STORAGE_KEY = `userComments_${productId}`;
 
   const [userRating, setUserRating] = useState(0);
   const [hoverRating, setHoverRating] = useState(0);
@@ -25,7 +28,7 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
       icon: c.icon && c.icon.length > 0 ? c.icon : DEFAULT_ICON,
     }));
 
-    const saved = localStorage.getItem("userComments");
+    const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
       try {
         const userComments: Comment[] = JSON.parse(saved);
@@ -41,10 +44,10 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     } else {
       setAllComments(originalsWithIcon);
     }
-  }, [comments]);
+  }, [comments, productId]);
 
   const saveUserComments = (userComments: Comment[]) => {
-    localStorage.setItem("userComments", JSON.stringify(userComments));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(userComments));
   };
 
   const handleRating = (rating: number) => {
@@ -71,7 +74,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     setUserRating(0);
   };
 
-  // 🗑 Confirmar y eliminar comentario
   const handleDeleteComment = (index: number) => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this comment?"
@@ -89,7 +91,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     <div className="bg-white rounded-2xl shadow-md p-6 mt-8 max-w-4xl mx-auto w-full">
       <h3 className="text-xl font-bold mb-4 text-[#2870B8]">Customer Reviews</h3>
 
-      {/* Calificación */}
       <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
         <p className="text-gray-700 font-medium mb-2 sm:mb-0">
           Rate this product:
@@ -108,7 +109,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
         </div>
       </div>
 
-      {/* Caja para escribir comentario */}
       <textarea
         value={userComment}
         onChange={(e) => setUserComment(e.target.value)}
@@ -122,7 +122,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
         Add Comment
       </button>
 
-      {/* Lista de comentarios */}
       {allComments.length > 0 ? (
         allComments.map((comment, index) => (
           <div
@@ -139,7 +138,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
               <div className="flex justify-between items-center mb-1">
                 <p className="font-semibold text-[#2870B8]">{comment.username}</p>
 
-                {/* Solo mostrar el botón si el comentario es del usuario */}
                 {comment.username === "You" && (
                   <button
                     onClick={() => handleDeleteComment(index)}
