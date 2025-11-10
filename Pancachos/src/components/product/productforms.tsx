@@ -8,7 +8,10 @@ import {
   PRODUCT_CATEGORIES,
   DEFAULT_SELLER,
 } from '../../utils/constants';
-
+import { FaTimes, FaPlus } from 'react-icons/fa';
+import { PREDEFINED_TAGS } from '../../utils/constants';
+import { validateTags } from '../../utils/validateForm';
+    
 interface ProductFormProps {
   product?: Product | null;
   onSave: (product: ProductFormData) => void;
@@ -35,6 +38,9 @@ function ProductForm({
   const [temperature, setTemperature] = useState(product?.temperature || '');
   const [stock, setStock] = useState(product?.stock?.toString() || '1');
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [tags, setTags] = useState<string[]>(product?.tags || []);
+const [newTag, setNewTag] = useState('');
+const [showTagInput, setShowTagInput] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -48,8 +54,27 @@ function ProductForm({
       setSize(product.size);
       setTemperature(product.temperature);
       setStock(product.stock.toString());
+      setTags(product.tags);
     }
   }, [product]);
+
+  const handleAddTag = (tagName: string) => {
+  const validation = validateTags([...tags, tagName]);
+  if (!validation.isValid) {
+    alert(validation.error);
+    return;
+  }
+  if (tagName.trim() && !tags.includes(tagName.trim())) {
+    setTags([...tags, tagName.trim()]);
+    setNewTag('');
+    setShowTagInput(false);
+  }
+};
+
+const handleRemoveTag = (tagToRemove: string) => {
+  setTags(tags.filter((tag) => tag !== tagToRemove));
+};
+
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -88,7 +113,7 @@ function ProductForm({
       category,
       size,
       temperature,
-      tags: [], // Por ahora vacío
+      tags,
       stock: parseInt(stock) || 1,
       sellerId: DEFAULT_SELLER.id,
       available: true,
@@ -210,6 +235,90 @@ function ProductForm({
           </div>
         </div>
 
+            {/* Tags personalizados */}
+<div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Additional Tags (optional)
+  </label>
+  <div className="flex flex-wrap gap-2 mb-3">
+    {tags.map((tag, index) => (
+      <div
+        key={index}
+        className="px-4 py-2 bg-amber-100 border-2 border-amber-300 rounded-full text-sm text-gray-700 flex items-center gap-2"
+      >
+        {tag}
+        <button
+          onClick={() => handleRemoveTag(tag)}
+          className="text-gray-500 hover:text-red-500"
+        >
+          <FaTimes className="text-xs" />
+        </button>
+      </div>
+    ))}
+
+    {tags.length < 5 && !showTagInput && (
+      <button
+        onClick={() => setShowTagInput(true)}
+        className="px-4 py-2 bg-[#D7B77C] text-white rounded-full text-sm font-medium hover:bg-[#caa44a] transition-colors flex items-center gap-1"
+      >
+        Add tag <FaPlus className="text-xs" />
+      </button>
+    )}
+  </div>
+
+  {showTagInput && (
+    <div className="space-y-3">
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={newTag}
+          onChange={(e) => setNewTag(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              handleAddTag(newTag);
+            }
+          }}
+          placeholder="Enter custom tag"
+          className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-amber-600"
+        />
+        <button
+          onClick={() => handleAddTag(newTag)}
+          className="px-4 py-2 bg-[#D7B77C] text-white rounded-lg hover:bg-[#caa44a] transition-colors"
+        >
+          Add
+        </button>
+        <button
+          onClick={() => {
+            setShowTagInput(false);
+            setNewTag('');
+          }}
+          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+
+      {/* Tags predefinidos */}
+      <div className="flex flex-wrap gap-2">
+        <span className="text-sm text-gray-600">Quick add:</span>
+        {PREDEFINED_TAGS.filter((tag) => !tags.includes(tag)).map((tag) => (
+          <button
+            key={tag}
+            onClick={() => handleAddTag(tag)}
+            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
+          >
+            {tag}
+          </button>
+        ))}
+      </div>
+    </div>
+  )}
+
+  {tags.length >= 5 && (
+    <p className="text-sm text-gray-500 mt-2">Maximum of 5 tags reached</p>
+  )}
+</div>
+
         {/* Descripción */}
         <div>
           <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
@@ -266,5 +375,3 @@ function ProductForm({
 }
 
 export default ProductForm;
-
-
