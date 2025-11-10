@@ -11,7 +11,7 @@ import {
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-
+  
   return (
     <nav className="relative w-[95%] bg-white rounded-[2rem] shadow-md flex items-center justify-between px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto mt-6">
       {/* Sección izquierda */}
@@ -40,10 +40,12 @@ function Navbar() {
         <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
         <NavLink to="/profile">
         <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
-        </NavLink>
-        <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
-          MY PRODUCTS
-        </button>
+        {/* MODIFICACIÓN: Agregado Link al botón MY PRODUCTS */}
+        <Link to="/myproducts">
+          <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
+            MY PRODUCTS
+          </button>
+        </Link>
       </div>
 
       {/* Menú desplegable */}
@@ -58,7 +60,15 @@ function Navbar() {
             Home
           </Link>
 
-          {/* Los siguientes se pueden activar cuando tengas las páginas */}
+          {/* NUEVO: Link a My Products en el menú móvil */}
+          <Link
+            to="/myproducts"
+            onClick={() => setOpen(false)}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          >
+            My Products
+          </Link>
+
           <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
             My messages <FaEnvelope />
           </button>
@@ -80,4 +90,5 @@ function Navbar() {
   );
 }
 
-export default Navbar;
+export default Navbar; 
+
