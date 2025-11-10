@@ -1,17 +1,21 @@
 import { useState, useEffect } from 'react';
-import { FaUpload, FaEdit } from 'react-icons/fa';
+import { FaUpload, FaEdit, FaTimes, FaPlus } from 'react-icons/fa';
 import type { Product, ProductFormData } from '../../types/product';
-import { validateImageFile } from '../../utils/validateForm';
+import {
+  validateProductName,
+  validatePrice,
+  validateImage,
+  validateImageFile,
+  validateTags,
+} from '../../utils/validateForm';
 import {
   SIZE_OPTIONS,
   TEMPERATURE_OPTIONS,
+  PREDEFINED_TAGS,
   PRODUCT_CATEGORIES,
   DEFAULT_SELLER,
 } from '../../utils/constants';
-import { FaTimes, FaPlus } from 'react-icons/fa';
-import { PREDEFINED_TAGS } from '../../utils/constants';
-import { validateTags } from '../../utils/validateForm';
-    
+
 interface ProductFormProps {
   product?: Product | null;
   onSave: (product: ProductFormData) => void;
@@ -96,10 +100,45 @@ const handleRemoveTag = (tagToRemove: string) => {
     }
   };
 
+  // Validación del formulario
+  const validateForm = (): boolean => {
+    const newErrors: Record<string, string> = {};
+
+    const nameValidation = validateProductName(name);
+    if (!nameValidation.isValid) {
+      newErrors.name = nameValidation.error || '';
+    }
+
+    const priceValidation = validatePrice(price);
+    if (!priceValidation.isValid) {
+      newErrors.price = priceValidation.error || '';
+    }
+
+    const imageValidation = validateImage(image);
+    if (!imageValidation.isValid) {
+      newErrors.image = imageValidation.error || '';
+    }
+
+    if (!category) {
+      newErrors.category = 'Category is required';
+    }
+
+    if (!size) {
+      newErrors.size = 'Size is required';
+    }
+
+    if (!temperature) {
+      newErrors.temperature = 'Temperature is required';
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Maneja el guardado del producto
   const handleSave = () => {
-    // Validación básica por ahora
-    if (!name.trim() || !price || !image || !category || !size || !temperature) {
-      alert('Please fill in all required fields');
+    if (!validateForm()) {
+      alert('Please fill in all required fields before saving');
       return;
     }
 
@@ -121,6 +160,16 @@ const handleRemoveTag = (tagToRemove: string) => {
 
     onSave(productData);
   };
+
+  // Verifica si el formulario está completo
+  const isFormValid =
+    name.trim() &&
+    price &&
+    parseFloat(price) > 0 &&
+    image &&
+    category &&
+    size &&
+    temperature;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -362,13 +411,42 @@ const handleRemoveTag = (tagToRemove: string) => {
           </div>
         </div>
 
-        {/* Botón de guardar */}
-        <button
-          onClick={handleSave}
-          className="w-full py-4 rounded-xl font-medium text-lg bg-[#D7B77C] text-white hover:bg-[#caa44a] transition-colors"
-        >
-          Save changes
-        </button>
+{/* Botón de guardar */}
+<button
+  onClick={handleSave}
+  disabled={!isFormValid}
+  className={`w-full py-4 rounded-xl font-medium text-lg transition-colors ${
+    isFormValid
+      ? 'bg-[#D7B77C] text-white hover:bg-[#caa44a]'
+      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+  }`}
+>
+  Save changes
+</button>
+
+{/* Botones adicionales para modo edición */}
+{isEditMode && product && (
+  <div className="flex gap-4 mt-4">
+    <button
+      onClick={() => onMarkUnavailable?.(product.id)}
+      className="flex-1 py-3 rounded-xl font-medium border-2 border-[#D7B77C] text-[#D7B77C] hover:bg-amber-50 transition-colors"
+    >
+      Mark as unavailable
+    </button>
+    <button
+      onClick={onCancel}
+      className="flex-1 py-3 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+    >
+      Cancel
+    </button>
+  </div>
+)}
+
+{!isFormValid && (
+  <p className="text-red-500 text-sm text-center">
+    * Name, price, image, category, size, and temperature are required
+  </p>
+)}
       </div>
     </div>
   );
