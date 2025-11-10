@@ -21,7 +21,7 @@ export default function CommentsSection({ comments, productId }: CommentsProps) 
   const [userComment, setUserComment] = useState("");
   const [allComments, setAllComments] = useState<Comment[]>([]);
 
-  // Cargar los comentarios iniciales + los guardados
+  // Cargar comentarios iniciales + los guardados
   useEffect(() => {
     const originalsWithIcon = comments.map((c) => ({
       ...c,
@@ -88,14 +88,16 @@ export default function CommentsSection({ comments, productId }: CommentsProps) 
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 mt-8 max-w-4xl mx-auto w-full">
-      <h3 className="text-xl font-bold mb-4 text-[#2870B8]">Customer Reviews</h3>
+    <div className="bg-white rounded-2xl shadow-md p-4 sm:p-6 mt-8 max-w-3xl mx-auto w-full">
+      <h3 className="text-xl font-bold mb-4 text-[#2870B8] text-center sm:text-left">
+        Customer Reviews
+      </h3>
 
-      <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
-        <p className="text-gray-700 font-medium mb-2 sm:mb-0">
+      <div className="flex flex-col sm:flex-row items-center justify-between mb-4 gap-3">
+        <p className="text-gray-700 font-medium text-center sm:text-left">
           Rate this product:
         </p>
-        <div className="flex text-[#2870B8] text-2xl cursor-pointer">
+        <div className="flex justify-center sm:justify-end text-[#2870B8] text-2xl cursor-pointer">
           {[1, 2, 3, 4, 5].map((star) => (
             <span
               key={star}
@@ -113,56 +115,67 @@ export default function CommentsSection({ comments, productId }: CommentsProps) 
         value={userComment}
         onChange={(e) => setUserComment(e.target.value)}
         placeholder="Write your comment..."
-        className="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#2870B8]"
+        className="w-full border border-gray-300 rounded-lg p-3 mb-3 focus:outline-none focus:ring-2 focus:ring-[#2870B8] text-sm sm:text-base resize-none"
       />
-      <button
-        onClick={handleAddComment}
-        className="bg-[#2870B8] text-white px-4 py-2 rounded-lg hover:bg-[#1e5a93] transition"
-      >
-        Add Comment
-      </button>
+      <div className="flex justify-center sm:justify-end">
+        <button
+          onClick={handleAddComment}
+          className="bg-[#2870B8] text-white px-5 py-2 rounded-lg hover:bg-[#1e5a93] transition text-sm sm:text-base"
+        >
+          Add Comment
+        </button>
+      </div>
 
       {allComments.length > 0 ? (
-        allComments.map((comment, index) => (
-          <div
-            key={index}
-            className="flex gap-4 border-b border-gray-200 py-4 last:border-none"
-          >
-            <img
-              src={DEFAULT_ICON}
-              alt="User Icon"
-              className="w-7 h-7 rounded-full object-cover"
-            />
+        <div className="mt-6 flex flex-col gap-4">
+          {allComments.map((comment, index) => (
+            <div
+              key={index}
+              className="flex items-start gap-3 border-b border-gray-200 pb-4 last:border-none"
+            >
+              <img
+                src={DEFAULT_ICON}
+                alt="User Icon"
+                className="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-1"
+              />
 
-            <div className="flex flex-col bg-[#FBEFD5] p-4 rounded-xl shadow-sm w-full">
-              <div className="flex justify-between items-center mb-1">
-                <p className="font-semibold text-[#2870B8]">{comment.username}</p>
+              <div className="flex flex-col bg-[#FBEFD5] p-4 rounded-xl shadow-sm w-full max-w-[90%] sm:max-w-[95%]">
+                <div className="flex justify-between items-center mb-1">
+                  <p className="font-semibold text-[#2870B8] text-sm sm:text-base">
+                    {comment.username}
+                  </p>
 
-                {comment.username === "You" && (
-                  <button
-                    onClick={() => handleDeleteComment(index)}
-                    className="text-[#2870B8] text-sm hover:text-[#11457a] transition"
-                  >
-                    Delete Comment
-                  </button>
-                )}
-              </div>
+                  {comment.username === "You" && (
+                    <button
+                      onClick={() => handleDeleteComment(index)}
+                      className="text-[#2870B8] text-xs sm:text-sm hover:text-[#11457a] transition"
+                    >
+                      Delete Comment
+                    </button>
+                  )}
+                </div>
 
-              <p className="text-gray-700 mb-2">{comment.comment}</p>
+                <p className="text-gray-700 mb-2 text-sm sm:text-base break-words leading-relaxed">
+                  {comment.comment}
+                </p>
 
-              <div className="flex text-[#2870B8] text-lg">
-                {"★".repeat(Math.max(0, Math.min(5, comment.rating)))}
-                {"☆".repeat(5 - Math.max(0, Math.min(5, comment.rating)))}
+                <div className="flex text-[#2870B8] text-lg sm:text-xl">
+                  {"★".repeat(Math.max(0, Math.min(5, comment.rating)))}
+                  {"☆".repeat(5 - Math.max(0, Math.min(5, comment.rating)))}
+                </div>
               </div>
             </div>
-          </div>
-        ))
+          ))}
+        </div>
       ) : (
-        <p className="text-gray-500 italic mt-4">No comments yet.</p>
+        <p className="text-gray-500 italic mt-4 text-center sm:text-left">
+          No comments yet.
+        </p>
       )}
     </div>
   );
 }
+
 
 
 
