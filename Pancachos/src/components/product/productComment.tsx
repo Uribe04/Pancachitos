@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 
+
+
+
 interface Comment {
-  icon?: string; // opcional por si el JSON no lo trae
+  icon?: string;
   username: string;
   comment: string;
   rating: number;
@@ -15,15 +18,13 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
   const [userComment, setUserComment] = useState("");
   const [allComments, setAllComments] = useState<Comment[]>([]);
 
-  // 🔹 Cargar los comentarios iniciales + los guardados
+  // Cargar los comentarios iniciales + los guardados
   useEffect(() => {
-    // 1️⃣ Asegurar que los del JSON tengan icono
     const originalsWithIcon = comments.map((c) => ({
       ...c,
       icon: c.icon && c.icon.length > 0 ? c.icon : DEFAULT_ICON,
     }));
 
-    // 2️⃣ Cargar comentarios guardados del usuario
     const saved = localStorage.getItem("userComments");
     if (saved) {
       try {
@@ -32,8 +33,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
           ...c,
           icon: c.icon && c.icon.length > 0 ? c.icon : DEFAULT_ICON,
         }));
-
-        // 3️⃣ Unir los dos arreglos (sin duplicar)
         setAllComments([...originalsWithIcon, ...userCommentsWithIcon]);
       } catch (error) {
         console.error("Error al cargar comentarios del localStorage:", error);
@@ -44,7 +43,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     }
   }, [comments]);
 
-  // 🔹 Guardar solo los comentarios agregados por el usuario
   const saveUserComments = (userComments: Comment[]) => {
     localStorage.setItem("userComments", JSON.stringify(userComments));
   };
@@ -66,7 +64,6 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     const updatedComments = [...allComments, newComment];
     setAllComments(updatedComments);
 
-    // Solo guardar los del usuario
     const onlyUserComments = updatedComments.filter((c) => c.username === "You");
     saveUserComments(onlyUserComments);
 
@@ -74,11 +71,25 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     setUserRating(0);
   };
 
+  // 🗑 Confirmar y eliminar comentario
+  const handleDeleteComment = (index: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this comment?"
+    );
+    if (!confirmDelete) return;
+
+    const updated = allComments.filter((_, i) => i !== index);
+    setAllComments(updated);
+
+    const onlyUserComments = updated.filter((c) => c.username === "You");
+    saveUserComments(onlyUserComments);
+  };
+
   return (
     <div className="bg-white rounded-2xl shadow-md p-6 mt-8 max-w-4xl mx-auto w-full">
       <h3 className="text-xl font-bold mb-4 text-[#2870B8]">Customer Reviews</h3>
 
-      {/* ⭐ Calificación */}
+      {/* Calificación */}
       <div className="flex flex-col sm:flex-row items-center justify-between mb-4">
         <p className="text-gray-700 font-medium mb-2 sm:mb-0">
           Rate this product:
@@ -97,7 +108,7 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
         </div>
       </div>
 
-      {/* ✏️ Caja para escribir comentario */}
+      {/* Caja para escribir comentario */}
       <textarea
         value={userComment}
         onChange={(e) => setUserComment(e.target.value)}
@@ -111,7 +122,7 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
         Add Comment
       </button>
 
-      {/* 💬 Lista de comentarios */}
+      {/* Lista de comentarios */}
       {allComments.length > 0 ? (
         allComments.map((comment, index) => (
           <div
@@ -119,15 +130,28 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
             className="flex gap-4 border-b border-gray-200 py-4 last:border-none"
           >
             <img
-              src={comment.icon || DEFAULT_ICON}
+              src={DEFAULT_ICON}
               alt="User Icon"
               className="w-7 h-7 rounded-full object-cover"
             />
+
             <div className="flex flex-col bg-[#FBEFD5] p-4 rounded-xl shadow-sm w-full">
-              <p className="font-semibold text-[#2870B8] mb-1">
-                {comment.username}
-              </p>
+              <div className="flex justify-between items-center mb-1">
+                <p className="font-semibold text-[#2870B8]">{comment.username}</p>
+
+                {/* Solo mostrar el botón si el comentario es del usuario */}
+                {comment.username === "You" && (
+                  <button
+                    onClick={() => handleDeleteComment(index)}
+                    className="text-[#2870B8] text-sm hover:text-[#11457a] transition"
+                  >
+                    Delete Comment
+                  </button>
+                )}
+              </div>
+
               <p className="text-gray-700 mb-2">{comment.comment}</p>
+
               <div className="flex text-[#2870B8] text-lg">
                 {"★".repeat(Math.max(0, Math.min(5, comment.rating)))}
                 {"☆".repeat(5 - Math.max(0, Math.min(5, comment.rating)))}
@@ -141,6 +165,8 @@ export default function CommentsSection({ comments }: { comments: Comment[] }) {
     </div>
   );
 }
+
+
 
 
 
