@@ -10,6 +10,7 @@ export interface Product {
   description: string;
   image: string;
   category: string;
+  comments: []
 }
 
 export interface Bakery {
