@@ -1,22 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import {useState } from "react";
 import type { FormEvent} from "react";
+import { addUser, emailExists } from "../../utils/validateForm";
 
 export default function Register() {
   const navigate = useNavigate();
-  
   const [formData, setFormData] = useState({
     email: '',
     password: '',
     confirmPassword: ''
   });
-
   const [errors, setErrors] = useState({
     email: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    general: ''
   });
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,11 +24,11 @@ export default function Register() {
       ...prev,
       [name]: value
     }));
-    // Clear error when typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
+        general: ''
       }));
     }
   };
@@ -40,7 +39,8 @@ export default function Register() {
     const newErrors = {
       email: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      general: ''
     };
 
     // Validate email
@@ -48,6 +48,8 @@ export default function Register() {
       newErrors.email = 'Email is required';
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = 'Please enter a valid email';
+    } else if (emailExists(formData.email)) {
+      newErrors.email = 'Email already exists';
     }
 
     // Validate password
@@ -70,14 +72,22 @@ export default function Register() {
     }
 
     setIsSubmitting(true);
-    // Here you would typically make your API call
-    navigate("/login");
+
+    // Try to register new user
+    const success = addUser(formData.email, formData.password);
+    if (success) {
+      navigate("/login");
+    } else {
+      setErrors({
+        ...newErrors,
+        general: 'Registration failed. Please try again.'
+      });
+      setIsSubmitting(false);
+    }
   };
 
-  // Keep your existing return statement but update the form section:
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#69ADF1] px-6 sm:px-10">
-      {/* ...existing code... */}
       <div className="relative w-full max-w-[850px] md:max-w-[900px] h-auto md:h-[520px] rounded-2xl border-[6px] border-[#d5a84a] overflow-hidden flex items-center justify-center shadow-lg"
         style={{
           backgroundImage: `url('/images/bg login-register.png')`,
@@ -95,6 +105,10 @@ export default function Register() {
             </div>
 
             <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3 text-left">
+              {errors.general && (
+                <div className="text-red-500 text-xs text-center">{errors.general}</div>
+              )}
+
               <div className="flex flex-col gap-1">
                 <input
                   name="email"
@@ -128,49 +142,29 @@ export default function Register() {
                   placeholder="Confirm password"
                   className={`w-full border ${errors.confirmPassword ? 'border-red-500' : 'border-gray-300'} rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]`}
                 />
-                {errors.confirmPassword && <span className="text-red-500 text-xs">{errors.confirmPassword}</span>}
+                {errors.confirmPassword && (
+                  <span className="text-red-500 text-xs">{errors.confirmPassword}</span>
+                )}
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`bg-[#69ADF1] ${isSubmitting ? 'opacity-50' : 'hover:bg-[#4c95e5]'} text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform ${!isSubmitting && 'hover:scale-105'} text-sm`}
+                className={`bg-[#69ADF1] ${isSubmitting ? 'opacity-50' : 'hover:bg-[#4c95e5]'} text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform ${!isSubmitting && 'hover:scale-105'} text-sm mt-2`}
               >
                 {isSubmitting ? 'Creating account...' : 'Create account'}
               </button>
             </form>
 
-                {/* Parte inferior (social + login) */}
-            <div className="flex flex-col items-center gap-3 mt-2">
-              <span className="text-xs text-gray-500">Or Sign up with</span>
-
-              <div className="flex items-center justify-center gap-3">
-                <button className="border border-gray-300 rounded-full w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                  <img
-                    src="/images/icon-google.png"
-                    alt="Google"
-                    className="w-5 h-5 object-contain"
-                  />
-                </button>
-                <button className="border border-gray-300 rounded-full w-9 h-9 flex items-center justify-center hover:bg-gray-100 transition-colors">
-                  <img
-                    src="/images/icon-facebook.png"
-                    alt="Facebook"
-                    className="w-5 h-5 object-contain"
-                  />
-                </button>
-              </div>
-
-              <p className="text-xs text-gray-600">
-                Already have an account?{" "}
-                <span
-                  onClick={() => navigate("/login")}
-                  className="text-[#69ADF1] font-semibold cursor-pointer hover:underline"
-                >
-                  Log in
-                </span>
-              </p>
-            </div>
+            <p className="text-xs text-gray-600 mt-4">
+              Already have an account?{" "}
+              <span
+                onClick={() => navigate("/login")}
+                className="text-[#69ADF1] font-semibold cursor-pointer hover:underline"
+              >
+                Log in
+              </span>
+            </p>
           </div>
         </div>
       </div>

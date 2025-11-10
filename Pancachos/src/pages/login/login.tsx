@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import {useState } from "react";
 import type { FormEvent} from "react";
+import { verifyUser } from "../../utils/validateForm";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,7 +11,8 @@ export default function Login() {
   });
   const [errors, setErrors] = useState({
     email: '',
-    password: ''
+    password: '',
+    general: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -20,11 +22,12 @@ export default function Login() {
       ...prev,
       [name]: value
     }));
-    // Clear error when typing
+    // Clear errors when typing
     if (errors[name as keyof typeof errors]) {
       setErrors(prev => ({
         ...prev,
-        [name]: ''
+        [name]: '',
+        general: ''
       }));
     }
   };
@@ -32,12 +35,13 @@ export default function Login() {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     
-   
     const newErrors = {
       email: '',
-      password: ''
+      password: '',
+      general: ''
     };
 
+    // Basic validation
     if (!formData.email) newErrors.email = 'Email is required';
     if (!formData.password) newErrors.password = 'Password is required';
 
@@ -48,13 +52,20 @@ export default function Login() {
 
     setIsSubmitting(true);
 
-    navigate("/home");
+    // Verify credentials using validateForm utility
+    if (verifyUser(formData.email, formData.password)) {
+      navigate("/");
+    } else {
+      setErrors({
+        ...newErrors,
+        general: 'Invalid email or password'
+      });
+      setIsSubmitting(false);
+    }
   };
-
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#69ADF1] px-6 sm:px-10">
-
       <div className="relative w-full max-w-[850px] md:max-w-[900px] h-auto md:h-[520px] rounded-2xl border-[6px] border-[#d5a84a] overflow-hidden flex items-center justify-center shadow-lg"
         style={{
           backgroundImage: `url('/images/bg login-register.png')`,
@@ -77,6 +88,10 @@ export default function Login() {
             </div>
 
             <form onSubmit={handleSubmit} className="w-full flex flex-col gap-3 text-left">
+              {errors.general && (
+                <div className="text-red-500 text-xs text-center">{errors.general}</div>
+              )}
+              
               <div className="flex flex-col gap-1">
                 <input
                   name="email"
@@ -101,7 +116,10 @@ export default function Login() {
                 {errors.password && <span className="text-red-500 text-xs">{errors.password}</span>}
               </div>
 
-              <div className="text-right text-xs text-gray-500 hover:text-[#69ADF1] cursor-pointer" onClick={() => navigate("/recover")}>
+              <div 
+                className="text-right text-xs text-gray-500 hover:text-[#69ADF1] cursor-pointer"
+                onClick={() => navigate("/recover")}
+              >
                 Forgot your password?
               </div>
 
@@ -148,5 +166,4 @@ export default function Login() {
     </div>
   );
 }
-
 
