@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { addUser, emailExists } from "../../utils/validateForm";
+import { addUser, emailExists, bakeryNameExists } from "../../utils/localStorage";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -9,13 +9,17 @@ export default function Register() {
     email: "",
     password: "",
     confirmPassword: "",
+    bakeryName: "",
   });
+
   const [errors, setErrors] = useState({
     email: "",
     password: "",
     confirmPassword: "",
+    bakeryName: "",
     general: "",
   });
+
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,9 +44,11 @@ export default function Register() {
       email: "",
       password: "",
       confirmPassword: "",
+      bakeryName: "",
       general: "",
     };
 
+    // Validaciones
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -63,14 +69,31 @@ export default function Register() {
       newErrors.confirmPassword = "Passwords do not match";
     }
 
-    if (newErrors.email || newErrors.password || newErrors.confirmPassword) {
+    if (!formData.bakeryName) {
+      newErrors.bakeryName = "Bakery name is required";
+    } else if (bakeryNameExists(formData.bakeryName)) {
+      newErrors.bakeryName = "This bakery is already registered";
+    }
+
+    if (
+      newErrors.email ||
+      newErrors.password ||
+      newErrors.confirmPassword ||
+      newErrors.bakeryName
+    ) {
       setErrors(newErrors);
       return;
     }
 
     setIsSubmitting(true);
 
-    const success = addUser(formData.email, formData.password);
+    const success = addUser(
+      formData.email,
+      formData.password,
+      "bakery",
+      formData.bakeryName
+    );
+
     if (success) {
       navigate("/login");
     } else {
@@ -170,6 +193,25 @@ export default function Register() {
                 )}
               </div>
 
+              {/* 🔹 Campo de nombre de panadería */}
+              <div className="flex flex-col gap-1">
+                <input
+                  name="bakeryName"
+                  type="text"
+                  value={formData.bakeryName}
+                  onChange={handleChange}
+                  placeholder="Bakery name"
+                  className={`w-full border ${
+                    errors.bakeryName ? "border-red-500" : "border-gray-300"
+                  } rounded-lg px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#69ADF1]`}
+                />
+                {errors.bakeryName && (
+                  <span className="text-red-500 text-xs">
+                    {errors.bakeryName}
+                  </span>
+                )}
+              </div>
+
               <button
                 type="submit"
                 disabled={isSubmitting}
@@ -198,6 +240,3 @@ export default function Register() {
     </div>
   );
 }
-
-        
-
