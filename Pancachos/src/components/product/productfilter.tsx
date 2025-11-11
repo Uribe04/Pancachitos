@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 interface FilterValues {
-  category: string;
-  ubication: string;
+  size: string;
+  temperature: string;
   price: string;
 }
 
 const ProductFilter: React.FC = () => {
   const [filters, setFilters] = useState<FilterValues>({
-    category: "",
-    ubication: "",
+    size: "",
+    temperature: "",
     price: "",
   });
 
@@ -28,41 +28,42 @@ const ProductFilter: React.FC = () => {
 
 
   return (
-    <div className="bg-gradient-to-r from-[#D7B77C] to-[#EBD6A3] flex justify-center items-center py-8 px-6 sm:px-4">
+    <div className="bg-linear-to-r from-[#D7B77C] to-[#EBD6A3] flex justify-center items-center py-8 px-6 sm:px-4">
 
       <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-6 justify-center items-center w-full max-w-5xl">
 
         {/* Category */}
         <div className="relative w-full sm:w-auto">
           <select
-            name="category"
-            value={filters.category}
+            name="size"
+            value={filters.size}
             onChange={handleChange}
             className={selectBase}
           >
-            <option value="">Category</option>
-            <option value="bread">Bread</option>
-            <option value="sweet">Sweet</option>
-            <option value="salty">Salty</option>
+            <option value="">Size</option>
+            <option value="bread">Small</option>
+            <option value="sweet">Medium</option>
+            <option value="salty">Large</option>
           </select>
           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B58E44] w-4 h-4 pointer-events-none" />
         </div>
 
-        {/* Ubication */}
+        {/* Category */}
         <div className="relative w-full sm:w-auto">
           <select
-            name="ubication"
-            value={filters.ubication}
+            name="temperature"
+            value={filters.temperature}
             onChange={handleChange}
             className={selectBase}
           >
-            <option value="">Ubication</option>
-            <option value="north">North</option>
-            <option value="center">Center</option>
-            <option value="south">South</option>
+            <option value="">Temperature</option>
+            <option value="bread">Small</option>
+            <option value="sweet">Medium</option>
+            <option value="salty">Large</option>
           </select>
           <ChevronDown className="absolute right-4 top-1/2 -translate-y-1/2 text-[#B58E44] w-4 h-4 pointer-events-none" />
         </div>
+
 
         {/* Price */}
         <div className="relative w-full sm:w-auto">

@@ -155,25 +155,27 @@ interface User {
   password: string;
 }
 
-// Predefined users that will always be available
+
+
+// usuarios predeterminados
 const defaultUsers: User[] = [
   { email: "sofiaorejuela@gmail.com", password: "123456" },
   { email: "test@gmail.com", password: "123456" }
 ];
 
 /**
- * Gets all users from localStorage, including predefined ones
+ * obtiene usuarios del localstorage
  */
 export const getUsers = (): User[] => {
   try {
     const storedUsers = localStorage.getItem('pancachitos_users');
     if (!storedUsers) {
-      // First time: initialize with default users
+      
       localStorage.setItem('pancachitos_users', JSON.stringify(defaultUsers));
       return defaultUsers;
     }
     const parsedUsers = JSON.parse(storedUsers);
-    // Ensure default users are always present
+    
     const mergedUsers = [...defaultUsers];
     parsedUsers.forEach((user: User) => {
       if (!defaultUsers.some(def => def.email === user.email)) {
@@ -186,9 +188,7 @@ export const getUsers = (): User[] => {
   }
 };
 
-/**
- * Adds a new user if the email doesn't exist
- */
+
 export const addUser = (email: string, password: string): boolean => {
   try {
     const users = getUsers();
@@ -204,9 +204,7 @@ export const addUser = (email: string, password: string): boolean => {
   }
 };
 
-/**
- * Verifies user credentials
- */
+
 export const verifyUser = (email: string, password: string): boolean => {
   try {
     const users = getUsers();
@@ -219,9 +217,7 @@ export const verifyUser = (email: string, password: string): boolean => {
   }
 };
 
-/**
- * Checks if an email exists (for password recovery)
- */
+
 export const emailExists = (email: string): boolean => {
   try {
     const users = getUsers();

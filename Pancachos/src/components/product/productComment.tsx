@@ -136,7 +136,7 @@ export default function CommentsSection({ comments, productId }: CommentsProps) 
               <img
                 src={DEFAULT_ICON}
                 alt="User Icon"
-                className="w-9 h-9 rounded-full object-cover flex-shrink-0 mt-1"
+                className="w-9 h-9 rounded-full object-cover shrink-0 mt-1"
               />
 
               <div className="flex flex-col bg-[#FBEFD5] p-4 rounded-xl shadow-sm w-full max-w-[90%] sm:max-w-[95%]">
@@ -155,7 +155,7 @@ export default function CommentsSection({ comments, productId }: CommentsProps) 
                   )}
                 </div>
 
-                <p className="text-gray-700 mb-2 text-sm sm:text-base break-words leading-relaxed">
+                <p className="text-gray-700 mb-2 text-sm sm:text-base wrap-break-word leading-relaxed">
                   {comment.comment}
                 </p>
 
