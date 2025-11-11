@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import type { Product } from "../../types/product";
 import { addToCart, isInCart } from "../../utils/cartUtils";
 
@@ -41,13 +40,13 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="bg-white rounded-2xl shadow-lg w-72 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Imagen del producto */}
       <div className="relative cursor-pointer" onClick={() => Click()}>
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-40 object-cover"
+          className="w-full h-48 object-cover"
         />
 
         {/* Rating badge */}
