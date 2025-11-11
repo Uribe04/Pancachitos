@@ -124,6 +124,11 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, isUserProducts = fal
 // COMPONENTE PRINCIPAL
 export default function ProductCarousels() {
   const products = productsData as Product[];
+  // read filters from URL
+  const params = new URLSearchParams(window.location.search);
+  const filterSize = params.get('size') || '';
+  const filterTemp = params.get('temperature') || '';
+  const filterPrice = params.get('price') || '';
   
   //Estado para productos propios
   const [myProducts, setMyProducts] = useState<Product[]>([]);
@@ -133,9 +138,21 @@ export default function ProductCarousels() {
     const loadMyProducts = () => {
       const allProducts = getAllProducts();
       // Filtrar solo productos disponibles del vendedor
-      const availableMyProducts = allProducts.filter(
+      let availableMyProducts = allProducts.filter(
         (p) => p.sellerId === DEFAULT_SELLER.id && p.available
       );
+
+      // apply filters
+      availableMyProducts = availableMyProducts.filter((p) => {
+        if (filterSize && p.size !== filterSize) return false;
+        if (filterTemp && p.temperature !== filterTemp) return false;
+        if (filterPrice) {
+          if (filterPrice === 'low' && p.price > 2000) return false;
+          if (filterPrice === 'medium' && (p.price < 2001 || p.price > 5000)) return false;
+          if (filterPrice === 'high' && p.price <= 5000) return false;
+        }
+        return true;
+      });
       setMyProducts(availableMyProducts);
     };
 
@@ -166,9 +183,21 @@ export default function ProductCarousels() {
 
       {/* Renderiza un carrusel por cada panadería */}
       {BAKERIES.map((bakery) => {
-        const bakeryProducts = products.filter(
+        let bakeryProducts = products.filter(
           (product) => product.bakery === bakery.name
         );
+
+        // apply filters from URL
+        bakeryProducts = bakeryProducts.filter((p) => {
+          if (filterSize && p.size !== filterSize) return false;
+          if (filterTemp && p.temperature !== filterTemp) return false;
+          if (filterPrice) {
+            if (filterPrice === 'low' && p.price > 2000) return false;
+            if (filterPrice === 'medium' && (p.price < 2001 || p.price > 5000)) return false;
+            if (filterPrice === 'high' && p.price <= 5000) return false;
+          }
+          return true;
+        });
 
         return (
           <BakeryCarousel

@@ -155,6 +155,8 @@
     password: string;
   }
 
+  import { getUserByCredentials } from './localStorage';
+
 
 
 // usuarios predeterminados
@@ -207,11 +209,12 @@ export const addUser = (email: string, password: string): boolean => {
 
 export const verifyUser = (email: string, password: string): boolean => {
   try {
-    const users = getUsers();
-    return users.some(user => 
-      user.email.toLowerCase() === email.toLowerCase() && 
-      user.password === password
-    );
+    // Use the centralized localStorage user lookup to avoid duplicate storage keys
+    const user = getUserByCredentials(email, password);
+    if (user) return true;
+    // fallback: check the legacy local list stored under 'pancachitos_users'
+    const legacy = getUsers();
+    return legacy.some(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
   } catch {
     return false;
   }

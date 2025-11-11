@@ -35,13 +35,6 @@ export default function Navbar() {
 
       {/* Center: botones principales (ocultos en pantallas pequeñas) */}
       <div className="hidden md:flex items-center gap-4">
-        <button
-          type="button"
-          onClick={() => handleNavigation("/home")}
-          className="text-[#2870B8] font-semibold px-3 py-2 rounded-lg hover:bg-[#FAEFD5] transition"
-        >
-          Home
-        </button>
 
         <button
           type="button"
@@ -72,7 +65,7 @@ export default function Navbar() {
       <div className="flex items-center gap-3">
         <button
           type="button"
-          onClick={() => handleNavigation("/favourites")}
+          onClick={() => handleNavigation("/cart")}
           className="text-[#D7B77C] text-xl p-2 rounded-md hover:bg-[#FAEFD5] transition"
           aria-label="Cart"
         >
@@ -103,14 +96,6 @@ export default function Navbar() {
         <div className="absolute top-full left-4 right-4 mt-3 bg-white rounded-2xl shadow-lg z-50 p-3 border border-[#E8E8E8] md:hidden">
           {/* Grid 2x2 para los cuatro botones principales */}
           <div className="grid grid-cols-2 gap-2">
-            <button
-              type="button"
-              onClick={() => handleNavigation("/")}
-              className="w-full px-3 py-3 rounded-md text-[#2870B8] hover:bg-[#EAF6FF] transition flex items-center justify-center bg-[#FAEFD5]"
-            >
-              Home
-            </button>
-
             <button
               type="button"
               onClick={() => handleNavigation("/myproducts")}

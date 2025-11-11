@@ -20,7 +20,16 @@ const ProductFilter: React.FC = () => {
   };
 
   const handleFilter = () => {
-    console.log("Filters applied:", filters);
+    // Update URL search params so product listing components can read them
+    const params = new URLSearchParams(window.location.search);
+    if (filters.size) params.set('size', filters.size); else params.delete('size');
+    if (filters.temperature) params.set('temperature', filters.temperature); else params.delete('temperature');
+    if (filters.price) params.set('price', filters.price); else params.delete('price');
+    const base = window.location.pathname;
+    const newUrl = `${base}?${params.toString()}`;
+    window.history.replaceState({}, '', newUrl);
+    // trigger storage event-like update for components listening
+    window.dispatchEvent(new Event('filtersUpdated'));
   };
 
   const selectBase =
@@ -41,9 +50,9 @@ const ProductFilter: React.FC = () => {
             className={selectBase}
           >
             <option value="">Size</option>
-            <option value="bread">Small</option>
-            <option value="sweet">Medium</option>
-            <option value="salty">Large</option>
+            <option value="Small">Small</option>
+            <option value="Medium">Medium</option>
+            <option value="Large">Large</option>
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B58E44] w-3 h-3 pointer-events-none" />
         </div>
@@ -57,9 +66,8 @@ const ProductFilter: React.FC = () => {
             className={selectBase}
           >
             <option value="">Temperature</option>
-            <option value="bread">Small</option>
-            <option value="sweet">Medium</option>
-            <option value="salty">Large</option>
+            <option value="Warm">Warm</option>
+            <option value="Cold">Cold</option>
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B58E44] w-3 h-3 pointer-events-none" />
         </div>
@@ -74,9 +82,9 @@ const ProductFilter: React.FC = () => {
             className={selectBase}
           >
             <option value="">Price</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
+            <option value="low">Low (&lt;= 2000)</option>
+            <option value="medium">Medium (2001 - 5000)</option>
+            <option value="high">High (&gt; 5000)</option>
           </select>
           <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-[#B58E44] w-3 h-3 pointer-events-none" />
         </div>
