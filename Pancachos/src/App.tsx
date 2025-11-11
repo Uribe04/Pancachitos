@@ -16,12 +16,11 @@ function App() {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
-            <Route path="/profile" element={<UserProfilePage />} />
-            <Route path="/favourites" element={<Favourite />} />
-
-    <Route path="/myproducts" element={<MyProducts />} />
-<Route path="/createproduct" element={<CreateProduct />} />
-<Route path="/editproduct/:id" element={<EditProduct />} />
+      <Route path="/profile" element={<UserProfilePage />} />
+      <Route path="/favourites" element={<Favourite />} />
+      <Route path="/myproducts" element={<MyProducts />} />
+      <Route path="/createproduct" element={<CreateProduct />} />
+      <Route path="/editproduct/:id" element={<EditProduct />} />
       <Route path="/select" element={<LoginSelect />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />

@@ -55,11 +55,6 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
     });
   };
 
-  // Función para navegar a seemoreproducts
-  const handleSeeMore = () => {
-    navigate('/seemoreproducts');
-  };
-
   function handleclick (id:Number){
     navigate(`/product/${id}` , {state: id})
     console.log("chi");
@@ -110,15 +105,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
           </button>
         </div>
 
-        {/* Botón "Ver más" */}
-        <div className="text-center mt-8">
-          <button
-            className="bg-[#C3A366] hover:bg-[#786033] text-white font-semibold py-3 px-8 rounded-lg transition-colors"
-            onClick={handleSeeMore}
-          >
-            See more products from {bakeryName} →
-          </button>
-        </div>
+       
       </div>
 
       {/* CSS para ocultar scrollbar */}

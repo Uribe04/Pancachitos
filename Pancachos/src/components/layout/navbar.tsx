@@ -1,17 +1,22 @@
 import { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaSearch,
   FaShoppingCart,
   FaUser,
   FaHeart,
-  FaEnvelope,
 } from "react-icons/fa";
 
 function Navbar() {
   const [open, setOpen] = useState(false);
-  
+  const navigate = useNavigate();
+
+  const handleNavigation = (path: string) => {
+    navigate(path);
+    setOpen(false);
+  };
+
   return (
     <nav className="relative w-[95%] bg-white rounded-[2rem] shadow-md flex items-center justify-between px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto mt-6">
       {/* Sección izquierda */}
@@ -37,58 +42,59 @@ function Navbar() {
 
       {/* Sección derecha */}
       <div className="flex items-center gap-4 ml-4">
-        <FaShoppingCart className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
-        <NavLink to="/profile">
-        <FaUser className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110" />
-        {/* MODIFICACIÓN: Agregado Link al botón MY PRODUCTS */}
-        <Link to="/myproducts">
-          <button className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition">
-            MY PRODUCTS
-          </button>
-        </Link>
+        <FaShoppingCart
+          className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110"
+          onClick={() => handleNavigation("/favourites")}
+        />
+        <FaUser
+          className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110"
+          onClick={() => handleNavigation("/profile")}
+        />
+        <button
+          onClick={() => handleNavigation("/myproducts")}
+          className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition"
+        >
+          MY PRODUCTS
+        </button>
       </div>
 
       {/* Menú desplegable */}
       {open && (
         <div className="absolute top-16 left-0 w-full sm:w-64 bg-[#FAEFD5] rounded-2xl shadow-lg p-4 flex flex-col gap-3 z-50 transition-all">
-          {/* Link a Home */}
-          <Link
-            to="/"
-            onClick={() => setOpen(false)}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          <button
+            onClick={() => handleNavigation("/")}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold hover:bg-[#fffcf5] transition"
           >
             Home
-          </Link>
-
-          {/* NUEVO: Link a My Products en el menú móvil */}
-          <Link
-            to="/myproducts"
-            onClick={() => setOpen(false)}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
-          >
-            My Products
-          </Link>
-
-          <button className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
-            My messages <FaEnvelope />
           </button>
 
-          <NavLink to="/profile" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
-          
+
+          <button
+            onClick={() => handleNavigation("/profile")}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          >
             Profile <FaUser />
-         
-          </NavLink>
+          </button>
 
-          <NavLink to="/favourites" className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition">
-
+          <button
+            onClick={() => handleNavigation("/favourites")}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          >
             My favorites <FaHeart />
-            
-          </NavLink>
+          </button>
+
+          <button
+            onClick={() => handleNavigation("/select")}
+            className="bg-white rounded-xl py-3 px-4 text-left text-red-500 font-semibold border-t border-[#E8E8E8] mt-2 hover:bg-[#fffcf5] transition"
+          >
+            Logout
+          </button>
         </div>
       )}
     </nav>
   );
 }
 
-export default Navbar; 
+export default Navbar;
+
 

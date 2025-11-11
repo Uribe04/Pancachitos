@@ -24,6 +24,7 @@ function CreateProduct() {
         rating: 0,
         reviewCount: 0,
         createdAt: new Date().toISOString(),
+        comments: [],
       };
 
       // Guardar en localStorage

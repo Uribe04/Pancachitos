@@ -1,15 +1,15 @@
-
-import type { Product } from "../../types/product";
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import type { Product } from "../../types/product";
 import { addToCart, isInCart } from "../../utils/cartUtils";
 
 interface ProductCardProps {
   product: Product;
-  Click: ()=> void;
+  Click: () => void;
 }
 
 export default function ProductCard({ product, Click }: ProductCardProps) {
-    const [added, setAdded] = useState(false);
+  const [added, setAdded] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
   // sincronizar estado inicial y escuchar cambios globales del carrito
@@ -41,50 +41,53 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow" >
+    <div className="bg-white rounded-2xl shadow-lg w-64 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Imagen del producto */}
-      <div className="relative" onClick={()=> Click()}>
-        <img 
+      <div className="relative cursor-pointer" onClick={() => Click()}>
+        <img
           src={product.image}
           alt={product.name}
           className="w-full h-40 object-cover"
         />
-        
+
         {/* Rating badge */}
         <div className="absolute top-2 left-2 bg-black/60 text-white text-xs px-2 py-1 rounded-full">
           ★ {product.rating}
         </div>
-        
-        {/* Botón favorito*/}
-        <button
-          className={`absolute top-2 right-2 rounded-full p-1 transition-colors ${favorite ? 'bg-blue-100 text-blue-500' : ' text-gray-700'}`}
-          onClick={() => setFavorite(!favorite)}
-        >
-          {favorite ? '💙' : '🤍'}
-        </button>
-
       </div>
 
       {/* Contenido de la card */}
       <div className="p-4">
-        {/* Título y logo de panadería */}
+        {/* Título, logo y corazón */}
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-gray-800 text-sm leading-tight">
             {product.name}
           </h3>
-          
-          {/* Logo de panadería */}
-          {product.bakeryLogo ? (
-            <img 
-              src={product.bakeryLogo} 
-              alt={product.bakery}
-              className="h-6 object-contain"
-            />
-          ) : (
-            <div className="bg-[#C3A366] border-[#786033] text-gray-100 font-semibold rounded-full text-xs px-2 py-1">
-              {product.bakery}
-            </div>
-          )}
+
+          <div className="flex items-center gap-2">
+            {/* Logo de panadería */}
+            {product.bakeryLogo ? (
+              <img
+                src={product.bakeryLogo}
+                alt={product.bakery}
+                className="h-6 object-contain"
+              />
+            ) : (
+              <div className="bg-[#C3A366] border-[#786033] text-gray-100 font-semibold rounded-full text-xs px-2 py-1">
+                {product.bakery}
+              </div>
+            )}
+
+            {/* Botón favorito */}
+            <button
+              className={`rounded-full p-1 transition-colors ${
+                favorite ? 'bg-blue-100 text-blue-500' : 'text-gray-700'
+              }`}
+              onClick={() => setFavorite(!favorite)}
+            >
+              {favorite ? '💙' : '🤍'}
+            </button>
+          </div>
         </div>
 
         {/* Tags de tamaño y temperatura */}
@@ -107,18 +110,20 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
           <span className="font-semibold text-gray-800 text-sm">
             $ {product.price.toLocaleString()} COP
           </span>
-          
-          {/* Botón Add to cart*/}
+
+          {/* Botón Add to cart */}
           <button
-            className={`${added ? 'bg-[#786033]' : 'bg-[#C3A366] hover:bg-[#786033]'} text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors`}
+            className={`${
+              added ? 'bg-[#786033]' : 'bg-[#C3A366] hover:bg-[#786033]'
+            } text-white text-xs font-semibold py-2 px-4 rounded-lg transition-colors`}
             onClick={handleAdd}
             disabled={added}
           >
             {added ? 'Added' : 'Add to cart'}
           </button>
-
         </div>
       </div>
     </div>
   );
 }
+
