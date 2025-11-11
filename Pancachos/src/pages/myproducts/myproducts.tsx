@@ -45,7 +45,7 @@ function MyProducts() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+      <div className="min-h-screen bg-gradient-to-r from-[#2971B9] to-[#69ADF1] pt-4">
         <Navbar />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="text-white text-2xl">Loading...</div>
@@ -55,7 +55,7 @@ function MyProducts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+    <div className="min-h-screen bg-gradient-to-r from-[#2971B9] to-[#69ADF1] pt-4">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-8">

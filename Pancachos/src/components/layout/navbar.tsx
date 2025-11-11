@@ -19,7 +19,7 @@ function Navbar() {
   };
 
   return (
-    <nav className="relative w-[95%] bg-white rounded-[2rem] shadow-md flex items-center justify-between px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto mt-6">
+    <nav className="relative w-[95%] bg-white rounded-[2rem] shadow-md flex items-center justify-between px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto">
       {/* Sección izquierda */}
       <div className="flex items-center gap-3 flex-1">
         {/* Botón menú */}
