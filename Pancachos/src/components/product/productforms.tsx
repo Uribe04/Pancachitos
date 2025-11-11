@@ -21,6 +21,7 @@ interface ProductFormProps {
   onSave: (product: ProductFormData) => void;
   onCancel: () => void;
   onMarkUnavailable?: (productId: number) => void;
+  onDelete?: (productId: number) => void;
   isEditMode?: boolean;
 }
 
@@ -29,6 +30,7 @@ function ProductForm({
   onSave,
   onCancel,
   onMarkUnavailable,
+  onDelete,
   isEditMode = false,
 }: ProductFormProps) {
   const [name, setName] = useState(product?.name || '');
@@ -43,8 +45,8 @@ function ProductForm({
   const [stock, setStock] = useState(product?.stock?.toString() || '1');
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [tags, setTags] = useState<string[]>(product?.tags || []);
-const [newTag, setNewTag] = useState('');
-const [showTagInput, setShowTagInput] = useState(false);
+  const [newTag, setNewTag] = useState('');
+  const [showTagInput, setShowTagInput] = useState(false);
 
   useEffect(() => {
     if (product) {
@@ -63,22 +65,21 @@ const [showTagInput, setShowTagInput] = useState(false);
   }, [product]);
 
   const handleAddTag = (tagName: string) => {
-  const validation = validateTags([...tags, tagName]);
-  if (!validation.isValid) {
-    alert(validation.error);
-    return;
-  }
-  if (tagName.trim() && !tags.includes(tagName.trim())) {
-    setTags([...tags, tagName.trim()]);
-    setNewTag('');
-    setShowTagInput(false);
-  }
-};
+    const validation = validateTags([...tags, tagName]);
+    if (!validation.isValid) {
+      alert(validation.error);
+      return;
+    }
+    if (tagName.trim() && !tags.includes(tagName.trim())) {
+      setTags([...tags, tagName.trim()]);
+      setNewTag('');
+      setShowTagInput(false);
+    }
+  };
 
-const handleRemoveTag = (tagToRemove: string) => {
-  setTags(tags.filter((tag) => tag !== tagToRemove));
-};
-
+  const handleRemoveTag = (tagToRemove: string) => {
+    setTags(tags.filter((tag) => tag !== tagToRemove));
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -100,7 +101,24 @@ const handleRemoveTag = (tagToRemove: string) => {
     }
   };
 
-  // Validación del formulario
+  //Función para subir logo de panadería
+  const handleBakeryLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const validation = validateImageFile(file);
+      if (!validation.isValid) {
+        alert(validation.error);
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setBakeryLogo(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
 
@@ -135,7 +153,6 @@ const handleRemoveTag = (tagToRemove: string) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Maneja el guardado del producto
   const handleSave = () => {
     if (!validateForm()) {
       alert('Please fill in all required fields before saving');
@@ -161,7 +178,6 @@ const handleRemoveTag = (tagToRemove: string) => {
     onSave(productData);
   };
 
-  // Verifica si el formulario está completo
   const isFormValid =
     name.trim() &&
     price &&
@@ -214,7 +230,7 @@ const handleRemoveTag = (tagToRemove: string) => {
           </div>
         </div>
 
-        {/* Bakery Info */}
+        {/*Bakery Info con upload de imagen */}
         <div className="space-y-3">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Bakery Name</label>
@@ -226,13 +242,23 @@ const handleRemoveTag = (tagToRemove: string) => {
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bakery Logo URL</label>
-            <input
-              type="text"
-              value={bakeryLogo}
-              onChange={(e) => setBakeryLogo(e.target.value)}
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-amber-600"
-            />
+            <label className="block text-sm font-medium text-gray-700 mb-1">Bakery Logo</label>
+            <div className="flex items-center gap-3">
+              {bakeryLogo && (
+                <img src={bakeryLogo} alt="Bakery logo" className="w-16 h-16 object-contain rounded-lg border-2 border-gray-300" />
+              )}
+              <label className="flex-1 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-amber-600 transition-colors text-center">
+                <span className="text-sm text-gray-600">
+                  {bakeryLogo ? 'Change logo' : 'Upload logo'}
+                </span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleBakeryLogoUpload}
+                  className="hidden"
+                />
+              </label>
+            </div>
           </div>
         </div>
 
@@ -284,89 +310,88 @@ const handleRemoveTag = (tagToRemove: string) => {
           </div>
         </div>
 
-            {/* Tags personalizados */}
-<div>
-  <label className="block text-sm font-medium text-gray-700 mb-2">
-    Additional Tags (optional)
-  </label>
-  <div className="flex flex-wrap gap-2 mb-3">
-    {tags.map((tag, index) => (
-      <div
-        key={index}
-        className="px-4 py-2 bg-amber-100 border-2 border-amber-300 rounded-full text-sm text-gray-700 flex items-center gap-2"
-      >
-        {tag}
-        <button
-          onClick={() => handleRemoveTag(tag)}
-          className="text-gray-500 hover:text-red-500"
-        >
-          <FaTimes className="text-xs" />
-        </button>
-      </div>
-    ))}
+        {/* Tags personalizados */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            Additional Tags (optional)
+          </label>
+          <div className="flex flex-wrap gap-2 mb-3">
+            {tags.map((tag, index) => (
+              <div
+                key={index}
+                className="px-4 py-2 bg-amber-100 border-2 border-amber-300 rounded-full text-sm text-gray-700 flex items-center gap-2"
+              >
+                {tag}
+                <button
+                  onClick={() => handleRemoveTag(tag)}
+                  className="text-gray-500 hover:text-red-500"
+                >
+                  <FaTimes className="text-xs" />
+                </button>
+              </div>
+            ))}
 
-    {tags.length < 5 && !showTagInput && (
-      <button
-        onClick={() => setShowTagInput(true)}
-        className="px-4 py-2 bg-[#D7B77C] text-white rounded-full text-sm font-medium hover:bg-[#caa44a] transition-colors flex items-center gap-1"
-      >
-        Add tag <FaPlus className="text-xs" />
-      </button>
-    )}
-  </div>
+            {tags.length < 5 && !showTagInput && (
+              <button
+                onClick={() => setShowTagInput(true)}
+                className="px-4 py-2 bg-[#D7B77C] text-white rounded-full text-sm font-medium hover:bg-[#caa44a] transition-colors flex items-center gap-1"
+              >
+                Add tag <FaPlus className="text-xs" />
+              </button>
+            )}
+          </div>
 
-  {showTagInput && (
-    <div className="space-y-3">
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-          onKeyPress={(e) => {
-            if (e.key === 'Enter') {
-              handleAddTag(newTag);
-            }
-          }}
-          placeholder="Enter custom tag"
-          className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-amber-600"
-        />
-        <button
-          onClick={() => handleAddTag(newTag)}
-          className="px-4 py-2 bg-[#D7B77C] text-white rounded-lg hover:bg-[#caa44a] transition-colors"
-        >
-          Add
-        </button>
-        <button
-          onClick={() => {
-            setShowTagInput(false);
-            setNewTag('');
-          }}
-          className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
-        >
-          Cancel
-        </button>
-      </div>
+          {showTagInput && (
+            <div className="space-y-3">
+              <div className="flex gap-2">
+                <input
+                  type="text"
+                  value={newTag}
+                  onChange={(e) => setNewTag(e.target.value)}
+                  onKeyPress={(e) => {
+                    if (e.key === 'Enter') {
+                      handleAddTag(newTag);
+                    }
+                  }}
+                  placeholder="Enter custom tag"
+                  className="flex-1 px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-amber-600"
+                />
+                <button
+                  onClick={() => handleAddTag(newTag)}
+                  className="px-4 py-2 bg-[#D7B77C] text-white rounded-lg hover:bg-[#caa44a] transition-colors"
+                >
+                  Add
+                </button>
+                <button
+                  onClick={() => {
+                    setShowTagInput(false);
+                    setNewTag('');
+                  }}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
 
-      {/* Tags predefinidos */}
-      <div className="flex flex-wrap gap-2">
-        <span className="text-sm text-gray-600">Quick add:</span>
-        {PREDEFINED_TAGS.filter((tag) => !tags.includes(tag)).map((tag) => (
-          <button
-            key={tag}
-            onClick={() => handleAddTag(tag)}
-            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
-          >
-            {tag}
-          </button>
-        ))}
-      </div>
-    </div>
-  )}
+              <div className="flex flex-wrap gap-2">
+                <span className="text-sm text-gray-600">Quick add:</span>
+                {PREDEFINED_TAGS.filter((tag) => !tags.includes(tag)).map((tag) => (
+                  <button
+                    key={tag}
+                    onClick={() => handleAddTag(tag)}
+                    className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-gray-200 transition-colors"
+                  >
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
-  {tags.length >= 5 && (
-    <p className="text-sm text-gray-500 mt-2">Maximum of 5 tags reached</p>
-  )}
-</div>
+          {tags.length >= 5 && (
+            <p className="text-sm text-gray-500 mt-2">Maximum of 5 tags reached</p>
+          )}
+        </div>
 
         {/* Descripción */}
         <div>
@@ -411,42 +436,56 @@ const handleRemoveTag = (tagToRemove: string) => {
           </div>
         </div>
 
-{/* Botón de guardar */}
-<button
-  onClick={handleSave}
-  disabled={!isFormValid}
-  className={`w-full py-4 rounded-xl font-medium text-lg transition-colors ${
-    isFormValid
-      ? 'bg-[#D7B77C] text-white hover:bg-[#caa44a]'
-      : 'bg-gray-300 text-gray-500 cursor-not-allowed'
-  }`}
->
-  Save changes
-</button>
+        {/* Botón de guardar */}
+        <button
+          onClick={handleSave}
+          disabled={!isFormValid}
+          className={`w-full py-4 rounded-xl font-medium text-lg transition-colors ${
+            isFormValid
+              ? 'bg-[#D7B77C] text-white hover:bg-[#caa44a]'
+              : 'bg-gray-300 text-gray-500 cursor-not-allowed'
+          }`}
+        >
+          Save changes
+        </button>
 
-{/* Botones adicionales para modo edición */}
-{isEditMode && product && (
-  <div className="flex gap-4 mt-4">
-    <button
-      onClick={() => onMarkUnavailable?.(product.id)}
-      className="flex-1 py-3 rounded-xl font-medium border-2 border-[#D7B77C] text-[#D7B77C] hover:bg-amber-50 transition-colors"
-    >
-      Mark as unavailable
-    </button>
-    <button
-      onClick={onCancel}
-      className="flex-1 py-3 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
-    >
-      Cancel
-    </button>
-  </div>
-)}
+        {/* Botones adicionales para modo edición */}
+        {isEditMode && product && (
+          <div className="space-y-3">
+            <div className="flex gap-4">
+              <button
+                onClick={() => onMarkUnavailable?.(product.id)}
+                className="flex-1 py-3 rounded-xl font-medium border-2 border-[#D7B77C] text-[#D7B77C] hover:bg-amber-50 transition-colors"
+              >
+                Mark as unavailable
+              </button>
+              <button
+                onClick={onCancel}
+                className="flex-1 py-3 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+            
+            {/* Botón de eliminar permanentemente */}
+            <button
+              onClick={() => {
+                if (window.confirm('WARNING: This will permanently delete this product. This action cannot be undone. Are you sure?')) {
+                  onDelete?.(product.id);
+                }
+              }}
+              className="w-full py-3 rounded-xl font-medium bg-red-500 text-white hover:bg-red-600 transition-colors"
+            >
+            Delete Permanently
+            </button>
+          </div>
+        )}
 
-{!isFormValid && (
-  <p className="text-red-500 text-sm text-center">
-    * Name, price, image, category, size, and temperature are required
-  </p>
-)}
+        {!isFormValid && (
+          <p className="text-red-500 text-sm text-center">
+            * Name, price, image, category, size, and temperature are required
+          </p>
+        )}
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ function MyProducts() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Cargar productos del vendedor
   useEffect(() => {
     const loadProducts = () => {
       try {
@@ -26,8 +25,6 @@ function MyProducts() {
     };
 
     loadProducts();
-
-    // Escuchar cambios en localStorage
     window.addEventListener('storage', loadProducts);
     return () => window.removeEventListener('storage', loadProducts);
   }, []);
@@ -73,7 +70,6 @@ function MyProducts() {
             </button>
           </div>
 
-          {/* Grid de productos */}
           {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {products.map((product) => (
@@ -109,9 +105,16 @@ function MyProducts() {
                   {/* Información del producto */}
                   <div className="p-6">
                     <div className="flex items-start justify-between mb-3">
-                      <h3 className="text-xl font-bold text-gray-900">
-                        {product.name}
-                      </h3>
+                      {/* Mostrar nombre del producto */}
+                      <div>
+                        <h3 className="text-xl font-bold text-gray-900 mb-1">
+                          {product.name}
+                        </h3>
+                        {/* Mostrar categoría */}
+                        <span className="text-sm text-gray-600 capitalize">
+                          {product.category}
+                        </span>
+                      </div>
                       <button
                         onClick={() => handleEditProduct(product.id)}
                         className="text-blue-500 hover:text-blue-600 p-2 hover:bg-blue-50 rounded-full transition-colors"
@@ -180,4 +183,3 @@ function MyProducts() {
 }
 
 export default MyProducts;
-

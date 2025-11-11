@@ -7,6 +7,7 @@ import {
   getProductById,
   updateProduct,
   markProductAsUnavailable,
+  deleteProduct,
 } from '../../utils/localStorage';
 import { SUCCESS_MESSAGES } from '../../utils/constants';
 
@@ -16,7 +17,6 @@ function EditProduct() {
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Cargar el producto a editar
   useEffect(() => {
     if (!id) {
       navigate('/myproducts');
@@ -40,17 +40,14 @@ function EditProduct() {
     if (!product) return;
 
     try {
-      // Crear producto actualizado
       const updatedProduct: Product = {
         ...product,
         ...productData,
-        // Mantener datos que no se editan
         rating: product.rating,
         reviewCount: product.reviewCount,
         createdAt: product.createdAt,
       };
 
-      // Actualizar en localStorage
       const success = updateProduct(updatedProduct);
 
       if (success) {
@@ -87,6 +84,23 @@ function EditProduct() {
     }
   };
 
+  // ✅ NUEVO: Función para eliminar permanentemente
+  const handleDeleteProduct = (productId: number) => {
+    try {
+      const success = deleteProduct(productId);
+
+      if (success) {
+        alert('✅ Product deleted permanently');
+        navigate('/myproducts');
+      } else {
+        alert('Error deleting product');
+      }
+    } catch (error) {
+      console.error('Error deleting product:', error);
+      alert('There was an error deleting the product. Please try again.');
+    }
+  };
+
   const handleCancel = () => {
     navigate('/myproducts');
   };
@@ -120,6 +134,7 @@ function EditProduct() {
             onSave={handleUpdateProduct}
             onCancel={handleCancel}
             onMarkUnavailable={handleMarkUnavailable}
+            onDelete={handleDeleteProduct} // ✅ NUEVO: Pasar función de eliminar
             isEditMode={true}
           />
         </div>

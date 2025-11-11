@@ -1,12 +1,14 @@
 // SLIDEBAR / CAROUSEL COMPONENT
-// Muestra carruseles separados por panadería
+// Muestra carruseles separados por panadería + productos propios
 
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import productsData from '../../data/products.json';
 import type { Product } from '../../types/product';
 import ProductCard from '../product/productcard';
+import { getAllProducts } from '../../utils/localStorage'; 
+import { DEFAULT_SELLER } from '../../utils/constants'; 
 
 // CONFIGURACIÓN DE PANADERÍAS
 const BAKERIES = [
@@ -33,17 +35,17 @@ interface BakeryCarouselProps {
   bakeryName: string;
   bakeryLogo: string;
   products: Product[];
+  isUserProducts?: boolean;
 }
 
-function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProps) {
+function BakeryCarousel({ bakeryName, bakeryLogo, products, isUserProducts = false }: BakeryCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const navigate = useNavigate();
 
-  // Función para hacer scroll 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollContainerRef.current) return;
 
-    const scrollAmount = 280; // Ancho de card (264px) + gap (16px)
+    const scrollAmount = 280;
     const newPosition =
       direction === 'left'
         ? scrollContainerRef.current.scrollLeft - scrollAmount
@@ -55,27 +57,33 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
     });
   };
 
-  function handleclick (id:Number){
-    navigate(`/product/${id}` , {state: id})
-    console.log("chi");
-    
+  function handleclick(id: Number) {
+    navigate(`/product/${id}`, { state: { id, isUserProduct: isUserProducts } });
   }
+
+  // No mostrar el carrusel si no hay productos
+  if (products.length === 0) return null;
 
   return (
     <section className="py-12 px-4">
       <div className="max-w-7xl mx-auto">
-        {/* Header con logo y nombre de panadería */}
-        <div className="flex items-center justify-center gap-4 mb-8">
-          <img
-            src={bakeryLogo}
-            alt={bakeryName}
-            className="h-15 md:h-19 object-contain"
-          />
+        {/* Header con logo de panadería */}
+        <div className="flex items-center justify-center mb-12">
+          <div className="relative">
+            {/* Contenedor del logo sin fondo */}
+            <div className="relative h-40 w-40 md:h-48 md:w-48 flex items-center justify-center overflow-hidden">
+              <img
+                src={bakeryLogo}
+                alt={`${bakeryName} logo`}
+                className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+                loading="lazy"
+              />
+            </div>
+          </div>
         </div>
 
         {/* Carrusel de productos */}
-        <div className="relative">
-          {/* Botón izquierdo */}
+        <div className="relative flex items-center justify-center">
           <button
             onClick={() => scroll('left')}
             className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
@@ -84,10 +92,9 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
             <ChevronLeft className="w-6 h-6 text-gray-500" />
           </button>
 
-          {/* Container de cards */}
           <div
             ref={scrollContainerRef}
-            className="flex gap-8 overflow-x-auto scrollbar-hide scroll-smooth px-8"
+            className="flex gap-6 overflow-x-auto scrollbar-hide scroll-smooth px-12 py-4 w-full justify-center"
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           >
             {products.map((product) => (
@@ -95,7 +102,6 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
             ))}
           </div>
 
-          {/* Botón derecho */}
           <button
             onClick={() => scroll('right')}
             className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white/90 hover:bg-white shadow-lg rounded-full p-3 transition-all hover:scale-110"
@@ -104,11 +110,8 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
             <ChevronRight className="w-6 h-6 text-gray-800" />
           </button>
         </div>
-
-       
       </div>
 
-      {/* CSS para ocultar scrollbar */}
       <style>{`
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
@@ -121,6 +124,27 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products }: BakeryCarouselProp
 // COMPONENTE PRINCIPAL
 export default function ProductCarousels() {
   const products = productsData as Product[];
+  
+  //Estado para productos propios
+  const [myProducts, setMyProducts] = useState<Product[]>([]);
+
+  // Cargar productos propios del localStorage
+  useEffect(() => {
+    const loadMyProducts = () => {
+      const allProducts = getAllProducts();
+      // Filtrar solo productos disponibles del vendedor
+      const availableMyProducts = allProducts.filter(
+        (p) => p.sellerId === DEFAULT_SELLER.id && p.available
+      );
+      setMyProducts(availableMyProducts);
+    };
+
+    loadMyProducts();
+
+    // Escuchar cambios en localStorage
+    window.addEventListener('storage', loadMyProducts);
+    return () => window.removeEventListener('storage', loadMyProducts);
+  }, []);
 
   return (
     <div>
@@ -130,13 +154,21 @@ export default function ProductCarousels() {
         </h1>
       </div>
 
+      {/* Carrusel de "My bakery" (si hay productos) */}
+      {myProducts.length > 0 && (
+        <BakeryCarousel
+          bakeryName={myProducts[0]?.bakery || DEFAULT_SELLER.name}
+          bakeryLogo={myProducts[0]?.bakeryLogo || DEFAULT_SELLER.logo}
+          products={myProducts}
+          isUserProducts={true}
+        />
+      )}
+
       {/* Renderiza un carrusel por cada panadería */}
       {BAKERIES.map((bakery) => {
         const bakeryProducts = products.filter(
           (product) => product.bakery === bakery.name
         );
-
-        if (bakeryProducts.length === 0) return null;
 
         return (
           <BakeryCarousel

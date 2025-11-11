@@ -6,6 +6,7 @@ import {
   FaShoppingCart,
   FaUser,
   FaHeart,
+  FaBox,
 } from "react-icons/fa";
 
 function Navbar() {
@@ -60,10 +61,10 @@ function Navbar() {
 
       {/* Menú desplegable */}
       {open && (
-        <div className="absolute top-16 left-0 w-full sm:w-64 bg-[#FAEFD5] rounded-2xl shadow-lg p-4 flex flex-col gap-3 z-50 transition-all">
+        <div className="absolute md:z-[9999] top-16 left-0 w-full sm:w-64 bg-[#FAEFD5] rounded-2xl shadow-lg p-4 grid grid-cols-2 sm:grid-cols-1 gap-3 transition-all auto-rows-max">
           <button
             onClick={() => handleNavigation("/")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold hover:bg-[#fffcf5] transition"
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold hover:bg-[#fffcf5] transition col-span-2 sm:col-span-1"
           >
             Home
           </button>
@@ -77,6 +78,13 @@ function Navbar() {
           </button>
 
           <button
+            onClick={() => handleNavigation("/myproducts")}
+            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
+          >
+            My products <FaBox />
+          </button>
+
+          <button
             onClick={() => handleNavigation("/favourites")}
             className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
           >
@@ -85,7 +93,7 @@ function Navbar() {
 
           <button
             onClick={() => handleNavigation("/select")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-red-500 font-semibold border-t border-[#E8E8E8] mt-2 hover:bg-[#fffcf5] transition"
+            className="bg-white rounded-xl py-3 px-4 text-left text-red-500 font-semibold hover:bg-[#fffcf5] transition"
           >
             Logout
           </button>
