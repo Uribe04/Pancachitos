@@ -2,6 +2,7 @@ import { useNavigate } from "react-router-dom";
 import {useState } from "react";
 import type { FormEvent} from "react";
 import { verifyUser } from "../../utils/validateForm";
+import { getUserByCredentials, setCurrentUser } from "../../utils/localStorage";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -54,7 +55,18 @@ export default function Login() {
 
     // Verify credentials using validateForm utility
     if (verifyUser(formData.email, formData.password)) {
-      navigate("/");
+      // Buscar el usuario real y guardarlo en la sesión
+      const user = getUserByCredentials(formData.email, formData.password);
+      if (user) {
+        setCurrentUser(user);
+        navigate("/");
+      } else {
+        setErrors({
+          ...newErrors,
+          general: 'User not found in system'
+        });
+        setIsSubmitting(false);
+      }
     } else {
       setErrors({
         ...newErrors,
