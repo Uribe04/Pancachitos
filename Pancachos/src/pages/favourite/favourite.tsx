@@ -1,35 +1,53 @@
+import { useEffect, useState } from "react";
 import Footer from "../../components/footer/footer";
 import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import productsData from "../../data/products.json";
 import type { Product } from "../../types/product";
+import { getFavorites } from "../../utils/localStorage";
 
 function Favourite() {
+  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
   const products = productsData as Product[];
 
-  // Aquí podrías filtrar solo favoritos si luego les pones una propiedad en el JSON.
-  // Por ahora usamos todos o, si quieres, los mejor calificados:
-  const favouriteProducts = products.filter((p) => p.rating >= 4.5);
+  useEffect(() => {
+    const updateFavorites = () => {
+      const favoriteIds = getFavorites();
+      const filtered = products.filter((p) => favoriteIds.includes(p.id));
+      setFavoriteProducts(filtered);
+    };
+
+    updateFavorites();
+    window.addEventListener("favoriteUpdated", updateFavorites);
+
+    return () => {
+      window.removeEventListener("favoriteUpdated", updateFavorites);
+    };
+  }, []);
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-sky-500 to-blue-600 flex flex-col items-center">
+    <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">
       {/* NAVBAR ARRIBA */}
-      <div className="w-full max-w-6xl mb-8">
+      <div className="w-full max-w-6xl mb-6 md:mb-8">
         <Navbar />
       </div>
 
       {/* CONTENEDOR BEIGE */}
-      <div className="w-full max-w-6xl bg-[#F4DFB3] rounded-[32px] shadow-2xl p-8">
-        <h1 className="text-3xl md:text-4xl font-bold text-[#786033] mb-6 flex items-center gap-2">
+      <div className="w-full max-w-6xl bg-[#F4DFB3] rounded-4xl shadow-2xl p-4 md:p-8">
+        <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#786033] mb-4 md:mb-6 flex items-center gap-2">
           Favorites
         </h1>
 
         {/* LISTA DE TARJETAS (SCROLL HORIZONTAL COMO EN LA MAQUETA) */}
-        <div className="flex gap-6 overflow-x-auto scrollbar-hide py-2">
-          {favouriteProducts.map((product) => (
-            <ProductCard key={product.id} product={product} />
-          ))}
-        </div>
+        {favoriteProducts.length === 0 ? (
+          <p className="text-center text-gray-600 text-sm md:text-base">No favorites yet. Mark some products as favorites!</p>
+        ) : (
+          <div className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide py-2">
+            {favoriteProducts.map((product) => (
+              <ProductCard key={product.id} product={product} Click={() => {}} />
+            ))}
+          </div>
+        )}
 
         {/* Ocultar scrollbar en navegadores comunes */}
         <style>{`
@@ -44,7 +62,7 @@ function Favourite() {
       </div>
 
       {/* FOOTER (opcional) */}
-      <div className="w-full mt-8">
+      <div className="w-full mt-6 md:mt-8">
         <Footer />
       </div>
     </div>

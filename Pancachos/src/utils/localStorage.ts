@@ -4,12 +4,7 @@ import type { Product } from '../types/product';
 // GESTIÓN DE USUARIOS
 // ============================================
 
-export interface User {
-  email: string;
-  password: string;
-  type: 'client' | 'bakery';
-  bakeryName?: string;
-}
+import type { User } from '../types/user';
 
 //  NUEVA key para usuarios 
 const USERS_KEY = 'bakery_users';
@@ -217,4 +212,86 @@ export const markProductAsAvailable = (id: number): boolean => {
   }
   
   return false;
+};
+// ============================================
+// GESTIÓN DE SESIÓN DE USUARIO
+// ============================================
+
+// Guardar usuario actual (login)
+export const setCurrentUser = (user: User): void => {
+  try {
+    saveToLocalStorage(STORAGE_KEYS.USER, user);
+  } catch (error) {
+    console.error("Error saving current user:", error);
+  }
+};
+
+// Obtener usuario actual (perfil, autenticación)
+export const getCurrentUser = (): User | null => {
+  try {
+    return getFromLocalStorage<User>(STORAGE_KEYS.USER);
+  } catch (error) {
+    console.error("Error reading current user:", error);
+    return null;
+  }
+};
+
+// Eliminar usuario actual (logout)
+export const removeCurrentUser = (): void => {
+  try {
+    removeFromLocalStorage(STORAGE_KEYS.USER);
+  } catch (error) {
+    console.error("Error removing current user:", error);
+  }
+};
+
+// Actualizar la información del usuario actual
+export const updateCurrentUser = (updatedData: Partial<User>): void => {
+  const user = getCurrentUser();
+  if (!user) return;
+  const updatedUser = { ...user, ...updatedData };
+  setCurrentUser(updatedUser);
+};
+
+// Verificar si hay sesión activa
+export const isUserLoggedIn = (): boolean => {
+  return !!getCurrentUser();
+};
+
+// ============================================
+// GESTIÓN DE FAVORITOS
+// ============================================
+
+// Obtener todos los favoritos del usuario actual
+export const getFavorites = (): number[] => {
+  const user = getCurrentUser();
+  if (!user) return [];
+  const favorites = getFromLocalStorage<number[]>(`${STORAGE_KEYS.FAVORITES}_${user.email}`) || [];
+  return favorites;
+};
+
+// Agregar producto a favoritos
+export const addFavorite = (productId: number): void => {
+  const user = getCurrentUser();
+  if (!user) return;
+  const favorites = getFavorites();
+  if (!favorites.includes(productId)) {
+    favorites.push(productId);
+    saveToLocalStorage(`${STORAGE_KEYS.FAVORITES}_${user.email}`, favorites);
+  }
+};
+
+// Eliminar producto de favoritos
+export const removeFavorite = (productId: number): void => {
+  const user = getCurrentUser();
+  if (!user) return;
+  const favorites = getFavorites();
+  const filteredFavorites = favorites.filter((id) => id !== productId);
+  saveToLocalStorage(`${STORAGE_KEYS.FAVORITES}_${user.email}`, filteredFavorites);
+};
+
+// Verificar si un producto está en favoritos
+export const isFavorite = (productId: number): boolean => {
+  const favorites = getFavorites();
+  return favorites.includes(productId);
 };

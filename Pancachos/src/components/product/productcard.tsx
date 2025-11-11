@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import type { Product } from "../../types/product";
 import { addToCart, isInCart } from "../../utils/cartUtils";
+import { addFavorite, removeFavorite, isFavorite } from "../../utils/localStorage";
 
 interface ProductCardProps {
   product: Product;
@@ -11,20 +12,29 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
   const [added, setAdded] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
-  // sincronizar estado inicial y escuchar cambios globales del carrito
+  // sincronizar estado inicial y escuchar cambios globales del carrito y favoritos
   useEffect(() => {
     setAdded(isInCart(product.id));
+    setFavorite(isFavorite(product.id));
 
     const onCartUpdated = () => {
       setAdded(isInCart(product.id));
     };
 
+    const onFavoriteUpdated = () => {
+      setFavorite(isFavorite(product.id));
+    };
+
     window.addEventListener("cartUpdated", onCartUpdated);
+    window.addEventListener("favoriteUpdated", onFavoriteUpdated);
     window.addEventListener("storage", onCartUpdated as EventListener);
+    window.addEventListener("storage", onFavoriteUpdated as EventListener);
 
     return () => {
       window.removeEventListener("cartUpdated", onCartUpdated);
+      window.removeEventListener("favoriteUpdated", onFavoriteUpdated);
       window.removeEventListener("storage", onCartUpdated as EventListener);
+      window.removeEventListener("storage", onFavoriteUpdated as EventListener);
     };
   }, [product.id]);
 
@@ -39,8 +49,19 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
     if (ok) setAdded(true);
   };
 
+  const handleFavorite = () => {
+    if (favorite) {
+      removeFavorite(product.id);
+      setFavorite(false);
+    } else {
+      addFavorite(product.id);
+      setFavorite(true);
+    }
+    window.dispatchEvent(new Event("favoriteUpdated"));
+  };
+
   return (
-    <div className="bg-white rounded-2xl shadow-lg w-72 flex-shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
+    <div className="bg-white rounded-2xl shadow-lg w-72 shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Imagen del producto */}
       <div className="relative cursor-pointer" onClick={() => Click()}>
         <img
@@ -82,7 +103,7 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
               className={`rounded-full p-1 transition-colors ${
                 favorite ? 'bg-blue-100 text-blue-500' : 'text-gray-700'
               }`}
-              onClick={() => setFavorite(!favorite)}
+              onClick={handleFavorite}
             >
               {favorite ? '💙' : '🤍'}
             </button>
