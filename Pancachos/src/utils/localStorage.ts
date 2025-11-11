@@ -1,5 +1,95 @@
 import type { Product } from '../types/product';
 
+// ============================================
+// GESTIÓN DE USUARIOS
+// ============================================
+
+export interface User {
+  email: string;
+  password: string;
+  type: 'client' | 'bakery';
+  bakeryName?: string;
+}
+
+//  NUEVA key para usuarios 
+const USERS_KEY = 'bakery_users';
+
+// Obtener todos los usuarios
+export const getAllUsers = (): User[] => {
+  return getFromLocalStorage<User[]>(USERS_KEY) || [];
+};
+
+// Guardar todos los usuarios
+export const saveAllUsers = (users: User[]): void => {
+  saveToLocalStorage(USERS_KEY, users);
+};
+
+// Verificar si ya existe un usuario con ese email
+export const emailExists = (email: string): boolean => {
+  const users = getAllUsers();
+  return users.some((u) => u.email.toLowerCase() === email.toLowerCase());
+};
+
+// Verificar si ya existe una panadería con ese nombre
+export const bakeryNameExists = (bakeryName: string): boolean => {
+  const users = getAllUsers();
+  return users.some(
+    (u) =>
+      u.type === 'bakery' &&
+      u.bakeryName?.toLowerCase() === bakeryName.toLowerCase()
+  );
+};
+
+// Agregar un nuevo usuario (evita duplicados)
+export const addUser = (
+  email: string,
+  password: string,
+  type: 'client' | 'bakery',
+  bakeryName?: string
+): boolean => {
+  const users = getAllUsers();
+
+  if (emailExists(email)) {
+    alert(' Este correo ya está registrado. Intenta con otro.');
+    return false;
+  }
+
+  if (type === 'bakery' && bakeryName && bakeryNameExists(bakeryName)) {
+    alert(' Esta panadería ya está registrada.');
+    return false;
+  }
+
+  const newUser: User = { email, password, type, bakeryName };
+  users.push(newUser);
+  saveAllUsers(users);
+
+  alert(' Cuenta creada correctamente');
+  console.log('Usuario agregado:', newUser);
+  return true;
+};
+
+// Buscar un usuario por credenciales
+export const getUserByCredentials = (
+  email: string,
+  password: string
+): User | null => {
+  const users = getAllUsers();
+  return (
+    users.find(
+      (u) =>
+        u.email.toLowerCase() === email.toLowerCase() &&
+        u.password === password
+    ) || null
+  );
+};
+
+// Mostrar en consola todos los usuarios (solo debug)
+export const debugShowUsers = (): void => {
+  console.log(' Usuarios registrados:', getAllUsers());
+};
+
+
+
 // Nombre de las keys en localStorage
 export const STORAGE_KEYS = {
   PRODUCTS: 'bakery_products',
@@ -128,4 +218,3 @@ export const markProductAsAvailable = (id: number): boolean => {
   
   return false;
 };
-
