@@ -1,17 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  FaBars,
-  FaSearch,
   FaShoppingCart,
   FaUser,
   FaHeart,
   FaBox,
+  FaHome,
+  FaBars,
+  FaTimes,
 } from "react-icons/fa";
 
-function Navbar() {
-  const [open, setOpen] = useState(false);
+export default function Navbar() {
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const handleNavigation = (path: string) => {
     navigate(path);
@@ -19,81 +20,127 @@ function Navbar() {
   };
 
   return (
-    <nav className="relative w-[95%] bg-white rounded-[2rem] shadow-md flex items-center justify-between px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto mt-6">
-      {/* Sección izquierda */}
-      <div className="flex items-center gap-3 flex-1">
-        {/* Botón menú */}
+    <nav className="relative w-[95%] bg-white rounded-4xl shadow-md flex items-center justify-between px-4 md:px-6 py-3 border border-[#E8E8E8] max-w-6xl mx-auto mt-6">
+      {/* Left: home icon */}
+      <div className="flex items-center gap-4">
         <button
-          onClick={() => setOpen(!open)}
-          className="text-[#D7B77C] text-2xl focus:outline-none hover:scale-110 transition-transform cursor-pointer"
+          type="button"
+          onClick={() => handleNavigation("/")}
+          aria-label="Home"
+          className="text-[#2870B8] text-3xl p-1 rounded-md hover:bg-[#FAEFD5] transition"
         >
-          <FaBars />
+          <FaHome />
         </button>
-
-        {/* Barra de búsqueda */}
-        <div className="flex items-center bg-[#FAEFD5] rounded-full px-4 py-2 w-full max-w-md shadow-inner">
-          <FaSearch className="text-[#B68A3A] mr-2 cursor-pointer" />
-          <input
-            type="text"
-            placeholder="Search"
-            className="bg-transparent outline-none w-full placeholder:text-[#B68A3A] text-[#B68A3A] text-base"
-          />
-        </div>
       </div>
 
-      {/* Sección derecha */}
-      <div className="flex items-center gap-4 ml-4">
-        <FaShoppingCart
-          className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110"
-          onClick={() => handleNavigation("/favourites")}
-        />
-        <FaUser
-          className="text-[#D7B77C] text-xl cursor-pointer transition-all hover:text-[#B68A3A] hover:scale-110"
-          onClick={() => handleNavigation("/profile")}
-        />
+      {/* Center: botones principales (ocultos en pantallas pequeñas) */}
+      <div className="hidden md:flex items-center gap-4">
         <button
+          type="button"
+          onClick={() => handleNavigation("/home")}
+          className="text-[#2870B8] font-semibold px-3 py-2 rounded-lg hover:bg-[#FAEFD5] transition"
+        >
+          Home
+        </button>
+
+        <button
+          type="button"
           onClick={() => handleNavigation("/myproducts")}
-          className="hidden sm:block bg-[#D7B77C] text-white cursor-pointer font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition"
+          className="text-[#2870B8] font-semibold px-3 py-2 rounded-lg hover:bg-[#FAEFD5] transition flex items-center gap-2"
         >
-          MY PRODUCTS
+          <FaBox /> My products
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleNavigation("/favourites")}
+          className="text-[#2870B8] font-semibold px-3 py-2 rounded-lg hover:bg-[#FAEFD5] transition flex items-center gap-2"
+        >
+          <FaHeart /> My favorites
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleNavigation("/profile")}
+          className="text-[#2870B8] font-semibold px-3 py-2 rounded-lg hover:bg-[#FAEFD5] transition flex items-center gap-2"
+        >
+          <FaUser /> Profile
         </button>
       </div>
 
-      {/* Menú desplegable */}
+      {/* Right: acciones secundarias */}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={() => handleNavigation("/favourites")}
+          className="text-[#D7B77C] text-xl p-2 rounded-md hover:bg-[#FAEFD5] transition"
+          aria-label="Cart"
+        >
+          <FaShoppingCart />
+        </button>
+
+        <button
+          type="button"
+          onClick={() => handleNavigation("/login")}
+          className="hidden sm:inline-block bg-[#D7B77C] text-white font-semibold px-4 py-2 rounded-full text-xs md:text-sm hover:bg-[#caa44a] transition"
+        >
+          Logout
+        </button>
+
+        {/* Mobile menu toggle */}
+        <button
+          type="button"
+          onClick={() => setOpen((s) => !s)}
+          className="md:hidden text-[#2870B8] text-xl p-2 rounded-md hover:bg-[#FAEFD5] transition"
+          aria-label={open ? "Close menu" : "Open menu"}
+        >
+          {open ? <FaTimes /> : <FaBars />}
+        </button>
+      </div>
+
+      {/* Mobile menu: grid dos columnas en responsive */}
       {open && (
-        <div className="absolute md:z-[9999] top-16 left-0 w-full sm:w-64 bg-[#FAEFD5] rounded-2xl shadow-lg p-4 grid grid-cols-2 sm:grid-cols-1 gap-3 transition-all auto-rows-max">
-          <button
-            onClick={() => handleNavigation("/")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold hover:bg-[#fffcf5] transition col-span-2 sm:col-span-1"
-          >
-            Home
-          </button>
+        <div className="absolute top-full left-4 right-4 mt-3 bg-white rounded-2xl shadow-lg z-50 p-3 border border-[#E8E8E8] md:hidden">
+          {/* Grid 2x2 para los cuatro botones principales */}
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => handleNavigation("/")}
+              className="w-full px-3 py-3 rounded-md text-[#2870B8] hover:bg-[#EAF6FF] transition flex items-center justify-center bg-[#FAEFD5]"
+            >
+              Home
+            </button>
 
+            <button
+              type="button"
+              onClick={() => handleNavigation("/myproducts")}
+              className="w-full px-3 py-3 rounded-md text-[#2870B8] hover:bg-[#EAF6FF] transition flex items-center justify-center gap-2 bg-[#FAEFD5]"
+            >
+              <FaBox /> My products
+            </button>
 
-          <button
-            onClick={() => handleNavigation("/profile")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
-          >
-            Profile <FaUser />
-          </button>
+            <button
+              type="button"
+              onClick={() => handleNavigation("/favourites")}
+              className="w-full px-3 py-3 rounded-md text-[#2870B8] hover:bg-[#EAF6FF] transition flex items-center justify-center gap-2 bg-[#FAEFD5]"
+            >
+              <FaHeart /> My favorites
+            </button>
 
-          <button
-            onClick={() => handleNavigation("/myproducts")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
-          >
-            My products <FaBox />
-          </button>
+            <button
+              type="button"
+              onClick={() => handleNavigation("/profile")}
+              className="w-full px-3 py-3 rounded-md text-[#2870B8] hover:bg-[#EAF6FF] transition flex items-center justify-center gap-2 bg-[#FAEFD5]"
+            >
+              <FaUser /> Profile
+            </button>
+          </div>
 
+          {/* Logout ocupa toda la fila inferior separada */}
           <button
-            onClick={() => handleNavigation("/favourites")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-[#B68A3A] font-semibold flex items-center justify-between hover:bg-[#fffcf5] transition"
-          >
-            My favorites <FaHeart />
-          </button>
-
-          <button
+            type="button"
             onClick={() => handleNavigation("/select")}
-            className="bg-white rounded-xl py-3 px-4 text-left text-red-500 font-semibold hover:bg-[#fffcf5] transition"
+            className="mt-3 w-full px-3 py-3 rounded-md text-red-500 hover:bg-[#ffefef] transition bg-[#FFF6F6]"
           >
             Logout
           </button>
@@ -102,7 +149,5 @@ function Navbar() {
     </nav>
   );
 }
-
-export default Navbar;
 
 

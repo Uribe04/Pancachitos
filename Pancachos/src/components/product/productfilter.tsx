@@ -28,7 +28,7 @@ const ProductFilter: React.FC = () => {
 
 
   return (
-    <div className="bg-gradient-to-r from-[#D7B77C] to-[#EBD6A3] flex justify-center items-center py-4 px-4 sm:px-4 relative z-0">
+    <div className="bg-linear-to-r from-[#D7B77C] to-[#EBD6A3] flex justify-center items-center py-4 px-4 sm:px-4 relative z-0">
 
       <div className="flex flex-col sm:flex-row flex-wrap gap-2 sm:gap-4 justify-center items-center w-full max-w-5xl">
 
