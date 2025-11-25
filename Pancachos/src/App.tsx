@@ -1,5 +1,12 @@
 import './App.css'
 import { Routes, Route } from "react-router-dom";
+import { useEffect } from 'react';
+import { useAppDispatch } from './redux/hooks';
+import { hydrateAuth } from './redux/slices/authSlice';
+import { hydrateProducts } from './redux/slices/productsSlice';
+import { hydrateCart } from './redux/slices/cartSlice';
+import { hydrateFavorites } from './redux/slices/favoritesSlice';
+import { getCurrentUser } from './utils/localStorage';
 import Home from './pages/home/home';
 import UserProfilePage from './pages/userprofile/profilepage';
 import Favourite from './pages/favourite/favourite';
@@ -12,6 +19,19 @@ import Info from './pages/info/pInfo';
 import CartPage from './pages/cart/cart';
 
 function App() {
+  const dispatch = useAppDispatch();
+
+  // Hidratar Redux desde localStorage al cargar la app
+  useEffect(() => {
+    dispatch(hydrateAuth());
+    dispatch(hydrateProducts());
+    dispatch(hydrateCart());
+    
+    // Hidratar favoritos con el email del usuario actual
+    const user = getCurrentUser();
+    dispatch(hydrateFavorites(user?.email || null));
+  }, [dispatch]);
+
   return (
     <Routes>
       <Route path="/" element={<Home />} />

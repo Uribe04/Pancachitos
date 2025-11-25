@@ -2,10 +2,15 @@ import { useNavigate } from "react-router-dom";
 import {useState } from "react";
 import type { FormEvent} from "react";
 import { verifyUser } from "../../utils/validateForm";
-import { getUserByCredentials, setCurrentUser } from "../../utils/localStorage";
+import { getUserByCredentials } from "../../utils/localStorage";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/slices/authSlice";
+import { hydrateFavorites } from "../../redux/slices/favoritesSlice";
+import { resetCartOnLogout } from "../../redux/slices/cartSlice";
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -55,10 +60,18 @@ export default function Login() {
 
     // Verify credentials using validateForm utility
     if (verifyUser(formData.email, formData.password)) {
-      // Buscar el usuario real y guardarlo en la sesión
+      // Buscar el usuario real y guardarlo en Redux
       const user = getUserByCredentials(formData.email, formData.password);
       if (user) {
-        setCurrentUser(user);
+        // Limpiar carrito del usuario anterior
+        dispatch(resetCartOnLogout());
+        
+        // Guardar nuevo usuario
+        dispatch(setUser(user));
+        
+        // Cargar favoritos del nuevo usuario
+        dispatch(hydrateFavorites(user.email));
+        
         navigate("/");
       } else {
         setErrors({

@@ -1,28 +1,23 @@
-import { useEffect, useState } from "react";
-import { getCart, removeFromCart } from "../../utils/cartUtils";
-import type { CartItem } from "../../utils/cartUtils";
+import { useEffect } from "react";
+import { removeFromCart } from "../../utils/cartUtils";
 import { FaTrash, FaShoppingCart, FaPlus, FaMinus } from "react-icons/fa";
 import Banner from "../../components/layout/banner";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { hydrateCart, removeFromCart as removeFromCartRedux } from "../../redux/slices/cartSlice";
 
 export default function CartPage() {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const dispatch = useAppDispatch();
+  const items = useAppSelector((state) => state.cart.items);
 
   useEffect(() => {
-    const refresh = () => setItems(getCart());
-    refresh();
-    window.addEventListener("cartUpdated", refresh);
-    window.addEventListener("storage", (e) => {
-      if ((e as StorageEvent).key === "__cart_update_ts") refresh();
-    });
-    return () => {
-      window.removeEventListener("cartUpdated", refresh);
-      window.removeEventListener("storage", refresh as any);
-    };
-  }, []);
+    // Hidratar el carrito desde localStorage al montar el componente
+    dispatch(hydrateCart());
+  }, [dispatch]);
 
   const handleRemove = (id: number | string) => {
-    const updated = removeFromCart(id);
-    setItems(updated);
+    // Eliminar tanto de Redux como de localStorage
+    dispatch(removeFromCartRedux(id));
+    removeFromCart(id); // Para mantener localStorage sincronizado
   };
 
   const total = items.reduce((s, it) => s + (Number(it.price) || 0), 0);

@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import type { Product } from "../../types/product";
 import { addToCart, isInCart } from "../../utils/cartUtils";
-import { addFavorite, removeFavorite, isFavorite } from "../../utils/localStorage";
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { addToCart as addToCartRedux } from '../../redux/slices/cartSlice';
+import { addFavorite, removeFavorite } from '../../redux/slices/favoritesSlice';
 
 interface ProductCardProps {
   product: Product;
@@ -9,20 +11,24 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product, Click }: ProductCardProps) {
+  const dispatch = useAppDispatch();
+  const userEmail = useAppSelector((state) => state.auth.user?.email);
+  const favoriteIds = useAppSelector((state) => state.favorites.favoriteIds);
+  
   const [added, setAdded] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
   // sincronizar estado inicial y escuchar cambios globales del carrito y favoritos
   useEffect(() => {
     setAdded(isInCart(product.id));
-    setFavorite(isFavorite(product.id));
+    setFavorite(favoriteIds.includes(product.id));
 
     const onCartUpdated = () => {
       setAdded(isInCart(product.id));
     };
 
     const onFavoriteUpdated = () => {
-      setFavorite(isFavorite(product.id));
+      setFavorite(favoriteIds.includes(product.id));
     };
 
     window.addEventListener("cartUpdated", onCartUpdated);
@@ -36,7 +42,7 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
       window.removeEventListener("storage", onCartUpdated as EventListener);
       window.removeEventListener("storage", onFavoriteUpdated as EventListener);
     };
-  }, [product.id]);
+  }, [product.id, favoriteIds]);
 
   const handleAdd = () => {
     const item = {
@@ -45,16 +51,24 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
       price: product.price,
       image: product.image,
     };
-    const ok = addToCart(item);
-    if (ok) setAdded(true);
+    // Agregar a Redux
+    dispatch(addToCartRedux(item));
+    // También agregar a localStorage para compatibilidad
+    addToCart(item);
+    setAdded(true);
   };
 
   const handleFavorite = () => {
+    if (!userEmail) {
+      alert('Please log in to add favorites');
+      return;
+    }
+    
     if (favorite) {
-      removeFavorite(product.id);
+      dispatch(removeFavorite({ productId: product.id, userEmail }));
       setFavorite(false);
     } else {
-      addFavorite(product.id);
+      dispatch(addFavorite({ productId: product.id, userEmail }));
       setFavorite(true);
     }
     window.dispatchEvent(new Event("favoriteUpdated"));

@@ -3,31 +3,29 @@ import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaStar } from 'react-icons/fa';
 import Navbar from '../../components/layout/navbar';
 import type { Product } from '../../types/product';
-import { getProductsBySeller } from '../../utils/localStorage';
-import { DEFAULT_SELLER } from '../../utils/constants';
 import { displayPrice } from '../../utils/formatPrice';
+import { useAppSelector } from '../../redux/hooks';
 
 function MyProducts() {
   const navigate = useNavigate();
+  const allProducts = useAppSelector((state) => state.products.allProducts);
+  const currentUser = useAppSelector((state) => state.auth.user);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadProducts = () => {
-      try {
-        const userProducts = getProductsBySeller(DEFAULT_SELLER.id);
-        setProducts(userProducts);
-      } catch (error) {
-        console.error('Error loading products:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadProducts();
-    window.addEventListener('storage', loadProducts);
-    return () => window.removeEventListener('storage', loadProducts);
-  }, []);
+    try {
+      // Filtrar productos por email del usuario actual (no por constante)
+      const userProducts = currentUser
+        ? allProducts.filter((p) => p.sellerId === currentUser.email)
+        : [];
+      setProducts(userProducts);
+    } catch (error) {
+      console.error('Error loading products:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [allProducts, currentUser]);
 
   const handleCreateNew = () => {
     navigate('/createproduct');

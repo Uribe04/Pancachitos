@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import Footer from "../../components/footer/footer";
 import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
-import productsData from "../../data/products.json";
 import type { Product } from "../../types/product";
-import { getFavorites } from "../../utils/localStorage";
+import { useAppSelector } from "../../redux/hooks";
 
 function Favourite() {
   const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const products = productsData as Product[];
+  const products = useAppSelector((state) => state.products.allProducts);
+  const favoriteIds = useAppSelector((state) => state.favorites.favoriteIds);
 
   useEffect(() => {
     const updateFavorites = () => {
-      const favoriteIds = getFavorites();
       const filtered = products.filter((p) => favoriteIds.includes(p.id));
       setFavoriteProducts(filtered);
     };
@@ -23,7 +22,7 @@ function Favourite() {
     return () => {
       window.removeEventListener("favoriteUpdated", updateFavorites);
     };
-  }, []);
+  }, [favoriteIds]);
 
   return (
     <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">

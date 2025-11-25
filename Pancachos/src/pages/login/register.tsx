@@ -2,9 +2,13 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { addUser, emailExists, bakeryNameExists } from "../../utils/localStorage";
+import { useAppDispatch } from "../../redux/hooks";
+import { setUser } from "../../redux/slices/authSlice";
+import { hydrateFavorites } from "../../redux/slices/favoritesSlice";
 
 export default function Register() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -95,6 +99,15 @@ export default function Register() {
     );
 
     if (success) {
+      // Obtener el usuario creado y guardarlo en Redux
+      const newUser = {
+        email: formData.email,
+        password: formData.password,
+        type: "bakery" as const,
+        bakeryName: formData.bakeryName,
+      };
+      dispatch(setUser(newUser));
+      dispatch(hydrateFavorites(newUser.email));
       navigate("/login");
     } else {
       setErrors({

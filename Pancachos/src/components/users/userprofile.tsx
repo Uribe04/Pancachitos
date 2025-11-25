@@ -1,32 +1,37 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../layout/navbar";
-import {
-  getCurrentUser,
-  removeCurrentUser,
-  updateCurrentUser,
-} from "../../utils/localStorage";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { clearUser, updateUser } from "../../redux/slices/authSlice";
+import { clearFavoritesFromStorage } from "../../redux/slices/favoritesSlice";
+import { resetCartOnLogout } from "../../redux/slices/cartSlice";
+import { updateCurrentUser } from "../../utils/localStorage";
 
 function UserProfile() {
   const navigate = useNavigate();
-  const [user, setUser] = useState<any>(null);
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.auth.user);
+  
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [editData, setEditData] = useState<any>(null);
 
   useEffect(() => {
-    const storedUser = getCurrentUser();
-    if (!storedUser) {
+    if (!user) {
       alert("You must log in first.");
       navigate("/login");
     } else {
-      setUser(storedUser);
-      setEditData(storedUser);
+      setEditData(user);
     }
-  }, [navigate]);
+  }, [user, navigate]);
 
   const handleLogout = () => {
-    removeCurrentUser();
+    // Limpiar carrito del usuario
+    dispatch(resetCartOnLogout());
+    // Limpiar favoritos del usuario
+    dispatch(clearFavoritesFromStorage(user?.email || null));
+    // Limpiar usuario
+    dispatch(clearUser());
     alert("You have been logged out.");
     navigate("/login");
   };
@@ -49,8 +54,10 @@ function UserProfile() {
   };
 
   const handleEditSave = () => {
+    // Actualizar en Redux
+    dispatch(updateUser(editData));
+    // Actualizar en localStorage para compatibilidad
     updateCurrentUser(editData);
-    setUser(editData);
     setIsEditing(false);
     alert("Profile updated successfully!");
   };
@@ -62,8 +69,9 @@ function UserProfile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        updateCurrentUser({ profileImage: base64String });
-        setUser((prev: any) => ({ ...prev, profileImage: base64String }));
+        const updatedData = { profileImage: base64String };
+        dispatch(updateUser(updatedData));
+        updateCurrentUser(updatedData);
       };
       reader.readAsDataURL(file);
     }

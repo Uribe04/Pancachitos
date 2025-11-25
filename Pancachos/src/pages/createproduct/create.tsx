@@ -2,33 +2,46 @@ import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/layout/navbar';
 import ProductForm from '../../components/product/productforms';
 import type { Product, ProductFormData } from '../../types/product';
-import { addProduct, getAllProducts } from '../../utils/localStorage';
 import { SUCCESS_MESSAGES } from '../../utils/constants';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { addProduct as addProductToRedux } from '../../redux/slices/productsSlice';
+import { addProduct as addProductToLocalStorage } from '../../utils/localStorage';
 
 function CreateProduct() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const allProducts = useAppSelector((state) => state.products.allProducts);
+  const currentUser = useAppSelector((state) => state.auth.user);
 
   const handleSaveProduct = (productData: ProductFormData) => {
+    if (!currentUser) {
+      alert('You must be logged in to create a product');
+      navigate('/login');
+      return;
+    }
+
     try {
       // Generar ID único basado en los productos existentes
-      const existingProducts = getAllProducts();
       const newId =
-        existingProducts.length > 0
-          ? Math.max(...existingProducts.map((p) => p.id)) + 1
+        allProducts.length > 0
+          ? Math.max(...allProducts.map((p) => p.id)) + 1
           : 1;
 
-      // Crear nuevo producto
+      // Crear nuevo producto con sellerId = email del usuario actual
       const newProduct: Product = {
         ...productData,
         id: newId,
+        sellerId: currentUser.email,  // ← CAMBIO: Usar email del usuario
         rating: 0,
         reviewCount: 0,
         createdAt: new Date().toISOString(),
         comments: [],
       };
 
-      // Guardar en localStorage
-      addProduct(newProduct);
+      // Guardar en Redux
+      dispatch(addProductToRedux(newProduct));
+      // También guardar en localStorage para compatibilidad
+      addProductToLocalStorage(newProduct);
 
       // Mostrar mensaje de éxito
       alert(SUCCESS_MESSAGES.PRODUCT_CREATED);

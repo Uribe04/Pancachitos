@@ -3,17 +3,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import Navbar from '../../components/layout/navbar';
 import ProductForm from '../../components/product/productforms';
 import type { Product, ProductFormData } from '../../types/product';
-import {
-  getProductById,
-  updateProduct,
-  markProductAsUnavailable,
-  deleteProduct,
-} from '../../utils/localStorage';
 import { SUCCESS_MESSAGES } from '../../utils/constants';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { updateProduct as updateProductRedux, markProductUnavailable, deleteProduct as deleteProductRedux } from '../../redux/slices/productsSlice';
+import { updateProduct as updateProductLocalStorage, deleteProduct as deleteProductLocalStorage, markProductAsUnavailable } from '../../utils/localStorage';
 
 function EditProduct() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
+  const allProducts = useAppSelector((state) => state.products.allProducts);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,7 +23,7 @@ function EditProduct() {
     }
 
     const productId = parseInt(id);
-    const foundProduct = getProductById(productId);
+    const foundProduct = allProducts.find((p) => p.id === productId);
 
     if (foundProduct) {
       setProduct(foundProduct);
@@ -34,7 +33,7 @@ function EditProduct() {
     }
 
     setLoading(false);
-  }, [id, navigate]);
+  }, [id, navigate, allProducts]);
 
   const handleUpdateProduct = (productData: ProductFormData) => {
     if (!product) return;
@@ -48,14 +47,13 @@ function EditProduct() {
         createdAt: product.createdAt,
       };
 
-      const success = updateProduct(updatedProduct);
+      // Actualizar en Redux
+      dispatch(updateProductRedux(updatedProduct));
+      // También actualizar en localStorage para compatibilidad
+      updateProductLocalStorage(updatedProduct);
 
-      if (success) {
-        alert(SUCCESS_MESSAGES.PRODUCT_UPDATED);
-        navigate('/myproducts');
-      } else {
-        alert('Error updating product');
-      }
+      alert(SUCCESS_MESSAGES.PRODUCT_UPDATED);
+      navigate('/myproducts');
     } catch (error) {
       console.error('Error updating product:', error);
       alert('There was an error updating the product. Please try again.');
@@ -69,14 +67,13 @@ function EditProduct() {
 
     if (confirmAction) {
       try {
-        const success = markProductAsUnavailable(productId);
+        // Marcar como no disponible en Redux
+        dispatch(markProductUnavailable(productId));
+        // También en localStorage
+        markProductAsUnavailable(productId);
 
-        if (success) {
-          alert(SUCCESS_MESSAGES.PRODUCT_UNAVAILABLE);
-          navigate('/myproducts');
-        } else {
-          alert('Error marking product as unavailable');
-        }
+        alert(SUCCESS_MESSAGES.PRODUCT_UNAVAILABLE);
+        navigate('/myproducts');
       } catch (error) {
         console.error('Error marking product as unavailable:', error);
         alert('There was an error. Please try again.');
@@ -84,17 +81,15 @@ function EditProduct() {
     }
   };
 
-  // ✅ NUEVO: Función para eliminar permanentemente
   const handleDeleteProduct = (productId: number) => {
     try {
-      const success = deleteProduct(productId);
+      // Eliminar en Redux
+      dispatch(deleteProductRedux(productId));
+      // También en localStorage
+      deleteProductLocalStorage(productId);
 
-      if (success) {
-        alert('✅ Product deleted permanently');
-        navigate('/myproducts');
-      } else {
-        alert('Error deleting product');
-      }
+      alert('✅ Product deleted permanently');
+      navigate('/myproducts');
     } catch (error) {
       console.error('Error deleting product:', error);
       alert('There was an error deleting the product. Please try again.');
@@ -134,7 +129,7 @@ function EditProduct() {
             onSave={handleUpdateProduct}
             onCancel={handleCancel}
             onMarkUnavailable={handleMarkUnavailable}
-            onDelete={handleDeleteProduct} // ✅ NUEVO: Pasar función de eliminar
+            onDelete={handleDeleteProduct}
             isEditMode={true}
           />
         </div>
