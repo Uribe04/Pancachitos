@@ -99,18 +99,7 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
           </h3>
 
           <div className="flex items-center gap-2">
-            {/* Logo de panadería */}
-            {product.bakeryLogo ? (
-              <img
-                src={product.bakeryLogo}
-                alt={product.bakery}
-                className="h-6 object-contain"
-              />
-            ) : (
-              <div className="bg-[#C3A366] border-[#786033] text-gray-100 font-semibold rounded-full text-xs px-2 py-1">
-                {product.bakery}
-              </div>
-            )}
+            {/* Logo de panadería - Comentado por ahora, se implementará con relación a users */}
 
             {/* Botón favorito */}
             <button

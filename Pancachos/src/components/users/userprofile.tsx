@@ -69,7 +69,7 @@ function UserProfile() {
       const reader = new FileReader();
       reader.onloadend = () => {
         const base64String = reader.result as string;
-        const updatedData = { profileImage: base64String };
+        const updatedData = { profile_image: base64String };
         dispatch(updateUser(updatedData));
         updateCurrentUser(updatedData);
       };
@@ -92,7 +92,7 @@ function UserProfile() {
         <section className="w-full md:w-1/3 bg-white rounded-[28px] shadow-md p-6 flex flex-col items-center">
           <div className="relative mb-4">
             <img
-              src={user.profileImage || "/images/user-default.png"} // 🔥 aquí usa tu imagen del public
+              src={user.profile_image || "/images/user-default.png"} // 🔥 aquí usa tu imagen del public
               alt="User avatar"
               className="w-28 md:w-32 h-28 md:h-32 rounded-full object-cover border border-gray-300"
             />
@@ -111,7 +111,7 @@ function UserProfile() {
             {user.email?.split("@")[0] || "User"}
           </h2>
           <p className="text-xs md:text-sm text-gray-500 mb-6 text-center">
-            {user.bakeryName || (user.type === "bakery" ? "Bakery" : "Client")}
+            {user.bakery_name || (user.user_type === "bakery" ? "Bakery" : "Client")}
           </p>
 
           {/* Navegación */}
@@ -188,13 +188,13 @@ function UserProfile() {
                 </div>
               </div>
 
-              {editData?.type === "bakery" && (
+              {editData?.user_type === "bakery" && (
                 <div>
                   <label className="text-sm text-gray-500">Bakery Name</label>
                   <input
                     type="text"
-                    value={editData?.bakeryName || ""}
-                    onChange={(e) => handleEditChange("bakeryName", e.target.value)}
+                    value={editData?.bakery_name || ""}
+                    onChange={(e) => handleEditChange("bakery_name", e.target.value)}
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg text-base font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-[#CFA452]"
                   />
                 </div>
@@ -237,10 +237,10 @@ function UserProfile() {
                 </div>
               </div>
 
-              {user?.type === "bakery" && user?.bakeryName && (
+              {user?.user_type === "bakery" && user?.bakery_name && (
                 <div className="pb-3 border-b border-gray-200">
                   <p className="text-sm text-gray-500">Bakery Name</p>
-                  <p className="text-base font-semibold text-gray-800">{user?.bakeryName}</p>
+                  <p className="text-base font-semibold text-gray-800">{user?.bakery_name}</p>
                 </div>
               )}
             </div>

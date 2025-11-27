@@ -1,22 +1,20 @@
 export interface Product {
-  id: number;
+  id: string;  // Cambié de number a string (UUID de Supabase)
   name: string;
-  bakery: string;
-  bakeryLogo: string;
   price: number;
-  rating: number;
-  size: string;
-  temperature: string;
-  description: string;
-  image: string;
-  category: string;
-  sellerId: string;
-  tags: string[];
+  rating?: number;  // Opcional
+  size?: string;  // Opcional
+  temperature?: string;  // Opcional
+  description?: string;  // Opcional
+  image?: string;  // Opcional
+  category?: string;  // Opcional
+  tags?: string[];  // Opcional
   available: boolean;
   stock: number;
-  reviewCount: number;
-  createdAt: string;
-  comments: []
+  review_count: number;  // Cambié de reviewCount a snake_case (Supabase)
+  seller_id: string;  // Cambié de sellerId a snake_case (Supabase)
+  created_at: string;  // Cambié de createdAt a snake_case (Supabase)
+  updated_at: string;  // Nuevo: timestamp de actualización
 }
 
 export interface Bakery {
@@ -27,17 +25,15 @@ export interface Bakery {
 
 export interface ProductFormData {
   name: string;
-  bakery: string;
-  bakeryLogo: string;
   price: number;
-  size: string;
-  temperature: string;
-  description: string;
-  image: string;
-  category: string;
-  tags: string[];
+  size?: string;
+  temperature?: string;
+  description?: string;
+  image?: string;
+  category?: string;
+  tags?: string[];
   stock: number;
-  sellerId: string;
+  seller_id: string;  // Cambié de sellerId a snake_case
   available: boolean;
 }
 
