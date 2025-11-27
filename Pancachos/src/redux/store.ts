@@ -13,6 +13,7 @@ export const store = configureStore({
   },
 });
 
+
 // Tipos para usar en toda la aplicación
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
