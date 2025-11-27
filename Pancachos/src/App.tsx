@@ -1,35 +1,51 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
 import './App.css'
+import { Routes, Route } from "react-router-dom";
+import { useEffect } from 'react';
+import { useAppDispatch } from './redux/hooks';
+import { hydrateAuth } from './redux/slices/authSlice';
+import { hydrateProducts } from './redux/slices/productsSlice';
+import { hydrateCart } from './redux/slices/cartSlice';
+import { hydrateFavorites } from './redux/slices/favoritesSlice';
+import { getCurrentUser } from './utils/localStorage';
+import Home from './pages/home/home';
+import UserProfilePage from './pages/userprofile/profilepage';
+import Favourite from './pages/favourite/favourite';
+import MyProducts from './pages/myproducts/myproducts';
+import CreateProduct from './pages/createproduct/create';
+import EditProduct from './pages/editproduct/edit';
+import Register from './pages/login/register';
+import Login from './pages/login/login';
+import Info from './pages/info/pInfo';
+import CartPage from './pages/cart/cart';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const dispatch = useAppDispatch();
+
+  // Hidratar Redux desde localStorage al cargar la app
+  useEffect(() => {
+    dispatch(hydrateAuth());
+    dispatch(hydrateProducts());
+    dispatch(hydrateCart());
+    
+    // Hidratar favoritos con el email del usuario actual
+    const user = getCurrentUser();
+    dispatch(hydrateFavorites(user?.email || null));
+  }, [dispatch]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/profile" element={<UserProfilePage />} />
+      <Route path="/favourites" element={<Favourite />} />
+      <Route path="/myproducts" element={<MyProducts />} />
+      <Route path="/createproduct" element={<CreateProduct />} />
+      <Route path="/editproduct/:id" element={<EditProduct />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/product/:id" element={<Info />} />
+      <Route path="/cart" element={<CartPage />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
