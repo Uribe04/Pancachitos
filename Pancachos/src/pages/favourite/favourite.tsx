@@ -1,28 +1,28 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Footer from "../../components/footer/footer";
 import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import type { Product } from "../../types/product";
-import { useAppSelector } from "../../redux/hooks";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { fetchUserFavorites } from "../../redux/thunks/favoritesthunks";
 
 function Favourite() {
-  const [favoriteProducts, setFavoriteProducts] = useState<Product[]>([]);
-  const products = useAppSelector((state) => state.products.allProducts);
+  const dispatch = useAppDispatch();
+  const currentUser = useAppSelector((state) => state.auth.user);
+  const allProducts = useAppSelector((state) => state.products.allProducts);
   const favoriteIds = useAppSelector((state) => state.favorites.favoriteIds);
 
+  // Cargar favoritos del usuario actual
   useEffect(() => {
-    const updateFavorites = () => {
-      const filtered = products.filter((p) => favoriteIds.includes(p.id));
-      setFavoriteProducts(filtered);
-    };
+    if (currentUser?.id) {
+      dispatch(fetchUserFavorites(currentUser.id) as any);
+    }
+  }, [currentUser?.id, dispatch]);
 
-    updateFavorites();
-    window.addEventListener("favoriteUpdated", updateFavorites);
-
-    return () => {
-      window.removeEventListener("favoriteUpdated", updateFavorites);
-    };
-  }, [favoriteIds]);
+  // Filtrar productos favoritos
+  const favoriteProducts: Product[] = allProducts.filter((p) =>
+    favoriteIds.includes(p.id)
+  );
 
   return (
     <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">

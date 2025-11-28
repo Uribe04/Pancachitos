@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaStar } from 'react-icons/fa';
-import Navbar from '../../components/layout/navbar';
+import Navbar from "../../components/layout/navbar";
 import type { Product } from '../../types/product';
 import { displayPrice } from '../../utils/formatPrice';
 import { useAppSelector } from '../../redux/hooks';
@@ -37,13 +37,13 @@ function MyProducts() {
 
   const handleRatingClick = (product: Product) => {
     alert(
-      `This product has an average rating of ${product.rating.toFixed(1)} stars based on ${product.reviewCount} customer reviews.`
+      `This product has an average rating of ${(product.rating ?? 0).toFixed(1)} stars based on ${product.review_count ?? 0} customer reviews.`
     );
   };
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-r from-[#2971B9] to-[#69ADF1] pt-4">
+      <div className="min-h-screen bg-linear-to-r from-[#2971B9] to-[#69ADF1] pt-4">
         <Navbar />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="text-white text-2xl">Loading...</div>
@@ -53,7 +53,7 @@ function MyProducts() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-r from-[#2971B9] to-[#69ADF1] pt-4">
+    <div className="min-h-screen bg-linear-to-r from-[#2971B9] to-[#69ADF1] pt-4">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
@@ -130,7 +130,7 @@ function MyProducts() {
                       <span className="px-3 py-1 bg-white border-2 border-gray-300 rounded-full text-sm text-gray-700">
                         {product.temperature}
                       </span>
-                      {product.tags.map((tag, index) => (
+                      {(product.tags ?? []).map((tag, index) => (
                         <span
                           key={index}
                           className="px-3 py-1 bg-white border-2 border-gray-300 rounded-full text-sm text-gray-700"
