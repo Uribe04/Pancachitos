@@ -4,7 +4,7 @@ import Footer from "../../components/footer/footer";
 import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchProducts, toggleFavorite } from "../../redux/thunks/productsThunks";
+import { fetchProducts } from "../../redux/thunks/productsThunks";
 
 function Favourite() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function Favourite() {
   // Cargar productos si aún no están (por si quieres usar info adicional)
   useEffect(() => {
     if (!allProducts.length) {
-      dispatch(fetchProducts());
+      dispatch(fetchProducts() as any);
     }
   }, [allProducts.length, dispatch]);
 
@@ -49,13 +49,6 @@ function Favourite() {
     );
   }
 
-  // Manejar click en favorito (opcional, si ProductCard no lo maneja internamente)
-  const handleToggleFavorite = (productId: string) => {
-    if (currentUser?.id) {
-      dispatch(toggleFavorite({ userId: currentUser.id, productId }));
-    }
-  };
-
   return (
     <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">
       {/* NAVBAR */}
@@ -66,7 +59,7 @@ function Favourite() {
       {/* CONTENEDOR BEIGE */}
       <div className="w-full max-w-6xl bg-[#F4DFB3] rounded-4xl shadow-2xl p-4 md:p-8 min-h-[400px]">
         <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-[#786033] mb-4 md:mb-6 flex items-center gap-2">
-          My Favorites
+          ❤️ My Favorites
         </h1>
 
         {favoriteProducts.length === 0 ? (
@@ -88,7 +81,7 @@ function Favourite() {
               <ProductCard
                 key={product.id}
                 product={product}
-                Click={() => handleToggleFavorite(product.id)}
+                Click={() => navigate(`/info/${product.id}`)}
               />
             ))}
           </div>
@@ -114,4 +107,3 @@ function Favourite() {
 }
 
 export default Favourite;
-
