@@ -1,14 +1,22 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserFavorites, toggleFavorite, addToFavorites, removeFromFavorites } from "../thunks/favoritesThunks";
+import {
+  fetchUserFavorites,
+  toggleFavorite,
+  addToFavorites,
+  removeFromFavorites,
+} from '../thunks/favoritesThunks';
+import type { Product } from '../../types/product';
 
 interface FavoritesState {
-  favoriteIds: string[];
+  favoriteIds: (string | number)[];
+  favoriteProducts: Product[];   // 🆕 lista de productos completos
   loading: boolean;
   error: string | null;
 }
 
 const initialState: FavoritesState = {
   favoriteIds: [],
+  favoriteProducts: [],
   loading: false,
   error: null,
 };
@@ -17,14 +25,14 @@ const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    // Limpiar favoritos
     clearFavorites: (state) => {
       state.favoriteIds = [];
+      state.favoriteProducts = [];
       state.error = null;
     },
   },
   extraReducers: (builder) => {
-    // Fetch user favorites
+    // Fetch user favorites (por ahora solo ids)
     builder
       .addCase(fetchUserFavorites.pending, (state) => {
         state.loading = true;
@@ -32,38 +40,55 @@ const favoritesSlice = createSlice({
       })
       .addCase(fetchUserFavorites.fulfilled, (state, action) => {
         state.loading = false;
-        state.favoriteIds = action.payload;
+        state.favoriteIds = action.payload as (string | number)[];
+        // No llenamos favoriteProducts aquí (se llenan con los toggles)
       })
       .addCase(fetchUserFavorites.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });
 
-    // Toggle favorite
-    builder
-      .addCase(toggleFavorite.fulfilled, (state, action: any) => {
-        if (action.payload.action === 'added') {
-          if (!state.favoriteIds.includes(action.payload.productId)) {
-            state.favoriteIds.push(action.payload.productId);
-          }
-        } else if (action.payload.action === 'removed') {
-          state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload.productId);
-        }
-      });
+    // Toggle favorite (usa producto completo)
+    builder.addCase(toggleFavorite.fulfilled, (state, action: any) => {
+      const { productId, action: favAction, product } = action.payload;
 
-    // Add to favorites
-    builder
-      .addCase(addToFavorites.fulfilled, (state, action) => {
-        if (!state.favoriteIds.includes(action.payload)) {
-          state.favoriteIds.push(action.payload);
+      if (favAction === 'added') {
+        if (!state.favoriteIds.includes(productId)) {
+          state.favoriteIds.push(productId);
         }
-      });
 
-    // Remove from favorites
-    builder
-      .addCase(removeFromFavorites.fulfilled, (state, action) => {
-        state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload);
-      });
+        const exists = state.favoriteProducts.some(
+          (p) => String(p.id) === String(product.id)
+        );
+        if (!exists) {
+          state.favoriteProducts.push(product);
+        }
+      } else if (favAction === 'removed') {
+        state.favoriteIds = state.favoriteIds.filter(
+          (id) => String(id) !== String(productId)
+        );
+        state.favoriteProducts = state.favoriteProducts.filter(
+          (p) => String(p.id) !== String(productId)
+        );
+      }
+    });
+
+    // Add to favorites (solo ids)
+    builder.addCase(addToFavorites.fulfilled, (state, action) => {
+      if (!state.favoriteIds.includes(action.payload)) {
+        state.favoriteIds.push(action.payload);
+      }
+    });
+
+    // Remove from favorites (solo ids)
+    builder.addCase(removeFromFavorites.fulfilled, (state, action) => {
+      state.favoriteIds = state.favoriteIds.filter(
+        (id) => String(id) !== String(action.payload)
+      );
+      state.favoriteProducts = state.favoriteProducts.filter(
+        (p) => String(p.id) !== String(action.payload)
+      );
+    });
   },
 });
 
