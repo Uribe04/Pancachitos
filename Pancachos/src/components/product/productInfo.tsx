@@ -1,27 +1,13 @@
 import { useState, useEffect } from "react";
 import { addToCart, isInCart, removeFromCart } from "../../utils/cartUtils";
 import type { CartItem } from "../../utils/cartUtils";
+import type { Product } from "../../types/product";
 
 interface Comment {
   icon: string;
   username: string;
   comment: string;
   rating: number;
-}
-
-interface Product {
-  id: number;
-  name: string;
-  bakery: string;
-  bakeryLogo: string;
-  price: number;
-  rating: number;
-  size: string;
-  temperature: string;
-  description: string;
-  image: string;
-  category: string;
-  comments: Comment[];
 }
 
 export default function ProductCard({ product }: { product: Product }) {
@@ -71,19 +57,9 @@ export default function ProductCard({ product }: { product: Product }) {
       <div className="bg-white rounded-2xl shadow-md p-5 sm:p-6 w-full sm:w-[50%] min-h-[330px] flex flex-col justify-between">
         {/* Título y panadería */}
         <div>
-          <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center sm:text-left">
+          <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-center sm:text-left">
             {product.name}
           </h2>
-          <div className="flex items-center justify-center sm:justify-start gap-2 mb-4">
-            <img
-              src={product.bakeryLogo}
-              alt={product.bakery}
-              className="w-5 h-5 rounded-full object-cover"
-            />
-            <p className="text-gray-600 text-sm sm:text-base">
-              {product.bakery}
-            </p>
-          </div>
         </div>
 
         {/* Tags */}

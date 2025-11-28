@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useLocation } from "react-router-dom";
 import type { ComponentType } from "react";
 import Banner from "../../components/layout/banner";
@@ -5,17 +6,25 @@ import ProductFilter from "../../components/product/productfilter";
 import Footer from "../../components/footer/footer";
 import ProductCarousels from "../../components/layout/slidebar";
 import ProductInfo from "../../components/product/productInfo";
-import products from "../../data/products.json";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { fetchProducts } from "../../redux/thunks/productsThunks";
 
 const ProductCarouselsTyped = ProductCarousels as ComponentType<{ search: string }>;
 
 function Home() {
+  const dispatch = useAppDispatch();
   const location = useLocation();
+  const allProducts = useAppSelector((state) => state.products.allProducts);
   const q = new URLSearchParams(location.search).get("search") || "";
   const qNorm = q.toLowerCase().trim();
 
+  // Cargar todos los productos al montar
+  useEffect(() => {
+    dispatch(fetchProducts() as any);
+  }, [dispatch]);
+
   // filtrar productos por nombre
-  const filtered = (products as any[]).filter((p) =>
+  const filtered = allProducts.filter((p) =>
     (p.name || "").toString().toLowerCase().includes(qNorm)
   );
 

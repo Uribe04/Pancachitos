@@ -1,37 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FaPlus, FaEdit, FaStar } from 'react-icons/fa';
 import Navbar from "../../components/layout/navbar";
 import type { Product } from '../../types/product';
 import { displayPrice } from '../../utils/formatPrice';
-import { useAppSelector } from '../../redux/hooks';
+import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { fetchProductsBySeller } from '../../redux/thunks/productsThunks';
 
 function MyProducts() {
   const navigate = useNavigate();
-  const allProducts = useAppSelector((state) => state.products.allProducts);
+  const dispatch = useAppDispatch();
   const currentUser = useAppSelector((state) => state.auth.user);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const sellerProducts = useAppSelector((state) => state.products.sellerProducts);
+  const { loading } = useAppSelector((state) => state.products);
 
   useEffect(() => {
-    try {
-      // Filtrar productos por email del usuario actual (no por constante)
-      const userProducts = currentUser
-        ? allProducts.filter((p) => p.sellerId === currentUser.email)
-        : [];
-      setProducts(userProducts);
-    } catch (error) {
-      console.error('Error loading products:', error);
-    } finally {
-      setLoading(false);
+    if (currentUser?.id) {
+      dispatch(fetchProductsBySeller(currentUser.id) as any);
     }
-  }, [allProducts, currentUser]);
+  }, [currentUser?.id, dispatch]);
 
   const handleCreateNew = () => {
     navigate('/createproduct');
   };
 
-  const handleEditProduct = (productId: number) => {
+  const handleEditProduct = (productId: string) => {
     navigate(`/editproduct/${productId}`);
   };
 
@@ -68,9 +61,9 @@ function MyProducts() {
             </button>
           </div>
 
-          {products.length > 0 ? (
+          {sellerProducts.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {products.map((product) => (
+              {sellerProducts.map((product) => (
                 <div
                   key={product.id}
                   className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
@@ -89,7 +82,7 @@ function MyProducts() {
                     >
                       <FaStar className="text-yellow-400" />
                       <span className="text-sm font-medium">
-                        {product.rating.toFixed(1)}
+                        {(product.rating ?? 0).toFixed(1)}
                       </span>
                     </div>
                     {/* Badge de no disponible */}
