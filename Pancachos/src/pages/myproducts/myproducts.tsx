@@ -123,16 +123,18 @@ function MyProducts() {
                       <span className="px-3 py-1 bg-white border-2 border-gray-300 rounded-full text-sm text-gray-700">
                         {product.temperature}
                       </span>
-                      {(product.tags ?? []).map((tag, index) => (
-                        <span
-                          key={index}
-                          className="px-3 py-1 bg-white border-2 border-gray-300 rounded-full text-sm text-gray-700"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      {(() => {
+                        const tags = typeof product.tags === 'string' ? JSON.parse(product.tags || '[]') : (product.tags ?? []);
+                        return Array.isArray(tags) ? tags.map((tag, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-white border-2 border-gray-300 rounded-full text-sm text-gray-700"
+                          >
+                            {tag}
+                          </span>
+                        )) : null;
+                      })()}
                     </div>
-
                     {/* Descripción */}
                     <p className="text-gray-600 text-sm mb-4 line-clamp-3">
                       {product.description}
