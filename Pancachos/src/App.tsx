@@ -15,6 +15,7 @@ import Register from './pages/login/register';
 import Login from './pages/login/login';
 import Info from './pages/info/pInfo';
 import CartPage from './pages/cart/cart';
+import SearchPage from './pages/search/search';
 
 function App() {
   const dispatch = useAppDispatch();
@@ -38,6 +39,7 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/product/:id" element={<Info />} />
       <Route path="/cart" element={<CartPage />} />
+      <Route path="/search" element={<SearchPage />} />
     </Routes>
   );
 }

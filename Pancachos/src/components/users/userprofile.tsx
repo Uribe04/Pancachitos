@@ -114,7 +114,7 @@ function UserProfile() {
           {/* Navegación */}
           <nav className="w-full flex flex-col gap-2 mb-10">
             <NavLink
-              to="/favourite"
+              to="/favourites"
               className="text-left text-xs md:text-sm text-gray-700 hover:text-[#CFA452]"
             >
               My favorites

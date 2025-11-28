@@ -1,4 +1,5 @@
 export interface Product {
+  bakery: string;
   id: string;  // Cambié de number a string (UUID de Supabase)
   name: string;
   price: number;
