@@ -1,68 +1,71 @@
 import { createSlice } from '@reduxjs/toolkit';
-import type { PayloadAction } from '@reduxjs/toolkit';
+import { fetchUserFavorites, toggleFavorite, addToFavorites, removeFromFavorites } from "../thunks/favoritesthunks";
 
 interface FavoritesState {
-  favoriteIds: number[];
+  favoriteIds: string[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: FavoritesState = {
   favoriteIds: [],
+  loading: false,
+  error: null,
 };
 
 const favoritesSlice = createSlice({
   name: 'favorites',
   initialState,
   reducers: {
-    // Cargar favoritos desde localStorage basado en el email del usuario actual
-    hydrateFavorites: (state, action: PayloadAction<string | null>) => {
-      if (!action.payload) {
-        state.favoriteIds = [];
-        return;
-      }
-      const key = `bakery_favorites_${action.payload}`;
-      const stored = localStorage.getItem(key);
-      if (stored) {
-        try {
-          state.favoriteIds = JSON.parse(stored);
-        } catch (error) {
-          console.error('Error hydrating favorites:', error);
-        }
-      }
-    },
-
-    // Agregar favorito
-    addFavorite: (state, action: PayloadAction<{ productId: number; userEmail: string }>) => {
-      if (!state.favoriteIds.includes(action.payload.productId)) {
-        state.favoriteIds.push(action.payload.productId);
-        const key = `bakery_favorites_${action.payload.userEmail}`;
-        localStorage.setItem(key, JSON.stringify(state.favoriteIds));
-        window.dispatchEvent(new Event('favoriteUpdated'));
-      }
-    },
-
-    // Eliminar favorito
-    removeFavorite: (state, action: PayloadAction<{ productId: number; userEmail: string }>) => {
-      state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload.productId);
-      const key = `bakery_favorites_${action.payload.userEmail}`;
-      localStorage.setItem(key, JSON.stringify(state.favoriteIds));
-      window.dispatchEvent(new Event('favoriteUpdated'));
-    },
-
-    // Limpiar favoritos (al hacer logout)
+    // Limpiar favoritos
     clearFavorites: (state) => {
       state.favoriteIds = [];
+      state.error = null;
     },
+  },
+  extraReducers: (builder) => {
+    // Fetch user favorites
+    builder
+      .addCase(fetchUserFavorites.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserFavorites.fulfilled, (state, action) => {
+        state.loading = false;
+        state.favoriteIds = action.payload;
+      })
+      .addCase(fetchUserFavorites.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
 
-    // Limpiar favoritos de localStorage del usuario actual
-    clearFavoritesFromStorage: (state, action: PayloadAction<string | null>) => {
-      if (action.payload) {
-        const key = `bakery_favorites_${action.payload}`;
-        localStorage.removeItem(key);
-      }
-      state.favoriteIds = [];
-    },
+    // Toggle favorite
+    builder
+      .addCase(toggleFavorite.fulfilled, (state, action: any) => {
+        if (action.payload.action === 'added') {
+          if (!state.favoriteIds.includes(action.payload.productId)) {
+            state.favoriteIds.push(action.payload.productId);
+          }
+        } else if (action.payload.action === 'removed') {
+          state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload.productId);
+        }
+      });
+
+    // Add to favorites
+    builder
+      .addCase(addToFavorites.fulfilled, (state, action) => {
+        if (!state.favoriteIds.includes(action.payload)) {
+          state.favoriteIds.push(action.payload);
+        }
+      });
+
+    // Remove from favorites
+    builder
+      .addCase(removeFromFavorites.fulfilled, (state, action) => {
+        state.favoriteIds = state.favoriteIds.filter((id) => id !== action.payload);
+      });
   },
 });
 
-export const { hydrateFavorites, addFavorite, removeFavorite, clearFavorites, clearFavoritesFromStorage } = favoritesSlice.actions;
+export const { clearFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer;

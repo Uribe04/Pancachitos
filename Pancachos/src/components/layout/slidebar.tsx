@@ -58,7 +58,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, isUserProducts = fal
   };
 
   function handleclick(id: Number) {
-    navigate(`/product/${id}`, { state: { id, isUserProduct: isUserProducts } });
+    navigate(/product/${id}, { state: { id, isUserProduct: isUserProducts } });
   }
 
   // No mostrar el carrusel si no hay productos
@@ -74,7 +74,7 @@ function BakeryCarousel({ bakeryName, bakeryLogo, products, isUserProducts = fal
             <div className="relative h-40 w-40 md:h-48 md:w-48 flex items-center justify-center overflow-hidden">
               <img
                 src={bakeryLogo}
-                alt={`${bakeryName} logo`}
+                alt={${bakeryName} logo}
                 className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
                 loading="lazy"
               />
