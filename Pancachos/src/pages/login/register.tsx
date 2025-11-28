@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import type { FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { registerUser } from "../../redux/thunks/authThunks";
+import { registerUser, signIn } from "../../redux/thunks/authThunks";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -89,6 +89,8 @@ export default function Register() {
       user_type: "bakery",
       bakery_name: formData.bakery_name,
     }));
+
+    await signIn(formData.email, formData.password);
 
     if (result.meta.requestStatus === 'fulfilled') {
       // Registro exitoso

@@ -46,14 +46,19 @@ export default function CartPage() {
   };
 
   // Enriquecer items del carrito con información del producto
-  const enrichedItems: any[] = (cartItems as any[]).map((item: any) => ({
-    ...item,
-    product: allProducts.find((p) => p.id === item.product_id),
-  }));
+  const enrichedItems: any[] = (cartItems as any[]).map((item: any) => {
+    // Normalizar posibles nombres/formatos desde Supabase (product_id puede ser string/number)
+    const productId = Number(item.product_id ?? item.productId ?? item.product?.id ?? item.productId);
+    return {
+      ...item,
+      product: allProducts.find((p) => Number(p.id) === productId) || null,
+    };
+  });
 
   const total = enrichedItems.reduce((sum, item: any) => {
-    const price = item.product?.price || 0;
-    return sum + price * item.quantity;
+    const price = Number(item.product?.price ?? item.price ?? 0);
+    const qty = Number(item.quantity ?? 0);
+    return sum + price * qty;
   }, 0);
 
   return (
@@ -100,29 +105,29 @@ export default function CartPage() {
                       <div className="mt-3 flex items-center gap-3">
                         <div className="flex items-center gap-2 bg-[#F3F7FB] px-2 py-1 rounded">
                           <button 
-                            onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                            onClick={() => handleQuantityChange(String(item.id), Math.max(1, Number(item.quantity) - 1))}
                             className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80 hover:opacity-100"
                           >
                             <FaMinus />
                           </button>
                           <div className="px-3 text-sm font-medium">{item.quantity}</div>
                           <button 
-                            onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                            onClick={() => handleQuantityChange(String(item.id), Number(item.quantity) + 1)}
                             className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80 hover:opacity-100"
                           >
                             <FaPlus />
                           </button>
                         </div>
                         <div className="text-sm text-gray-500">Price</div>
-                        <div className="font-semibold text-[#1F2937]">${Number(item.product?.price || 0).toFixed(2)}</div>
+                        <div className="font-semibold text-[#1F2937]">${Number(item.product?.price ?? 0).toFixed(2)}</div>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <div className="font-semibold">${(Number(item.product?.price || 0) * item.quantity).toFixed(2)}</div>
+                      <div className="font-semibold">${(Number(item.product?.price ?? 0) * Number(item.quantity ?? 0)).toFixed(2)}</div>
                       <div className="text-sm text-gray-500">Total</div>
                       <button
-                        onClick={() => handleRemove(item.id)}
+                        onClick={() => handleRemove(String(item.id))}
                         className="mt-3 text-red-500 hover:text-red-600"
                         aria-label={`Remove ${item.product?.name}`}
                       >

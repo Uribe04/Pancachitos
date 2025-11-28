@@ -121,7 +121,7 @@ export default function Navbar() {
 
               <button
                 type="button"
-                onClick={() => handleNavigation("/select")}
+                onClick={() => handleNavigation("/login")}
                 className="mt-2 w-full px-3 py-2 rounded-md text-red-500 hover:bg-[#ffefef] transition bg-[#FFF6F6]"
               >
                 Logout
