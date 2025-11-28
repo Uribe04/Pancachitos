@@ -4,6 +4,7 @@ import type { FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { loginUser } from "../../redux/thunks/authThunks";
 import { resetCartOnLogout } from "../../redux/slices/cartSlice";
+import { supabase } from "../../config/supabaseClient";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -61,6 +62,16 @@ export default function Login() {
       email: formData.email, 
       password: formData.password 
     }));
+
+    let { data, error } = await supabase.auth.signInWithPassword({
+    email: formData.email,
+    password: formData.password   })
+
+    if (error){
+     console.log(error);
+    }else{
+      console.log(data);
+    }
 
     if (result.meta.requestStatus === 'fulfilled') {
       // Login exitoso

@@ -86,7 +86,6 @@ export default function Register() {
     const result = await dispatch(registerUser({
       email: formData.email,
       password: formData.password,
-      user_type: "bakery",
       bakery_name: formData.bakery_name,
     }));
 
