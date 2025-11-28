@@ -5,8 +5,6 @@ import { useAppDispatch } from './redux/hooks';
 import { hydrateAuth } from './redux/slices/authSlice';
 import { hydrateProducts } from './redux/slices/productsSlice';
 import { hydrateCart } from './redux/slices/cartSlice';
-import { hydrateFavorites } from './redux/slices/favoritesSlice';
-import { getCurrentUser } from './utils/localStorage';
 import Home from './pages/home/home';
 import UserProfilePage from './pages/userprofile/profilepage';
 import Favourite from './pages/favourite/favourite';
@@ -26,10 +24,6 @@ function App() {
     dispatch(hydrateAuth());
     dispatch(hydrateProducts());
     dispatch(hydrateCart());
-    
-    // Hidratar favoritos con el email del usuario actual
-    const user = getCurrentUser();
-    dispatch(hydrateFavorites(user?.email || null));
   }, [dispatch]);
 
   return (
