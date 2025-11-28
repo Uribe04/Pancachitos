@@ -3,7 +3,6 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { registerUser } from "../../redux/thunks/authThunks";
-import { hydrateFavorites } from "../../redux/slices/favoritesSlice";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -93,8 +92,6 @@ export default function Register() {
 
     if (result.meta.requestStatus === 'fulfilled') {
       // Registro exitoso
-      const newUser = result.payload as any;
-      dispatch(hydrateFavorites(newUser.email));
       navigate("/login");
     } else {
       // Registro fallido

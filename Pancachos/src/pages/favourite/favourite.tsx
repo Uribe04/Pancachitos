@@ -4,7 +4,7 @@ import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import type { Product } from "../../types/product";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchUserFavorites } from "../../redux/thunks/favoritesthunks";
+import { fetchUserFavorites } from "../../redux/thunks/favoritesThunks";
 
 function Favourite() {
   const dispatch = useAppDispatch();

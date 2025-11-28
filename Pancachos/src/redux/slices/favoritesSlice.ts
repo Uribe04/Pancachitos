@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { fetchUserFavorites, toggleFavorite, addToFavorites, removeFromFavorites } from "../thunks/favoritesthunks";
+import { fetchUserFavorites, toggleFavorite, addToFavorites, removeFromFavorites } from "../thunks/favoritesThunks";
 
 interface FavoritesState {
   favoriteIds: string[];

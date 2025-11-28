@@ -124,7 +124,7 @@ export default function CartPage() {
                       <button
                         onClick={() => handleRemove(item.id)}
                         className="mt-3 text-red-500 hover:text-red-600"
-                        aria-label={Remove ${item.product?.name}}
+                        aria-label={`Remove ${item.product?.name}`}
                       >
                         <FaTrash />
                       </button>

@@ -3,7 +3,6 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { loginUser } from "../../redux/thunks/authThunks";
-import { hydrateFavorites } from "../../redux/slices/favoritesSlice";
 import { resetCartOnLogout } from "../../redux/slices/cartSlice";
 
 export default function Login() {
@@ -65,9 +64,6 @@ export default function Login() {
 
     if (result.meta.requestStatus === 'fulfilled') {
       // Login exitoso
-      const user = result.payload as any;
-      // Cargar favoritos del nuevo usuario
-      dispatch(hydrateFavorites(user.email));
       navigate("/");
     } else {
       // Login fallido

@@ -3,7 +3,7 @@ import type { Product } from "../../types/product";
 import { addToCart, isInCart } from "../../utils/cartUtils";
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { addToCart as addToCartRedux } from '../../redux/slices/cartSlice';
-import { addFavorite, removeFavorite } from '../../redux/slices/favoritesSlice';
+import { toggleFavorite } from '../../redux/thunks/favoritesThunks';
 
 interface ProductCardProps {
   product: Product;
@@ -12,7 +12,6 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, Click }: ProductCardProps) {
   const dispatch = useAppDispatch();
-  const userEmail = useAppSelector((state) => state.auth.user?.email);
   const favoriteIds = useAppSelector((state) => state.favorites.favoriteIds);
   
   const [added, setAdded] = useState(false);
@@ -58,20 +57,21 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
     setAdded(true);
   };
 
-  const handleFavorite = () => {
-    if (!userEmail) {
+  const handleFavorite = async () => {
+    const currentUser = useAppSelector((state) => state.auth.user);
+    
+    if (!currentUser?.id) {
       alert('Please log in to add favorites');
       return;
     }
     
-    if (favorite) {
-      dispatch(removeFavorite({ productId: product.id, userEmail }));
-      setFavorite(false);
-    } else {
-      dispatch(addFavorite({ productId: product.id, userEmail }));
-      setFavorite(true);
+    try {
+      await dispatch(toggleFavorite({ productId: product.id, userId: currentUser.id }) as any);
+      setFavorite(!favorite);
+      window.dispatchEvent(new Event("favoriteUpdated"));
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
     }
-    window.dispatchEvent(new Event("favoriteUpdated"));
   };
 
   return (

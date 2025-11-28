@@ -1,5 +1,5 @@
 
-export type CartItem = { id: number; name?: string; price?: number; image?: string; [k: string]: any };
+export type CartItem = { id: string | number; name?: string; price?: number; image?: string; [k: string]: any };
 
 const STORAGE_KEY = "cartItems";
 const UPDATE_KEY = "__cart_update_ts";

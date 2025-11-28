@@ -3,7 +3,6 @@ import { NavLink, useNavigate } from "react-router-dom";
 import Navbar from "../layout/navbar";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
 import { clearUser, updateUser } from "../../redux/slices/authSlice";
-import { clearFavoritesFromStorage } from "../../redux/slices/favoritesSlice";
 import { resetCartOnLogout } from "../../redux/slices/cartSlice";
 import { updateCurrentUser } from "../../utils/localStorage";
 
@@ -28,8 +27,6 @@ function UserProfile() {
   const handleLogout = () => {
     // Limpiar carrito del usuario
     dispatch(resetCartOnLogout());
-    // Limpiar favoritos del usuario
-    dispatch(clearFavoritesFromStorage(user?.email || null));
     // Limpiar usuario
     dispatch(clearUser());
     alert("You have been logged out.");
@@ -122,7 +119,7 @@ function UserProfile() {
             >
               My favorites
             </NavLink>
-            {user.type === "bakery" && (
+            {user.user_type === "bakery" && (
               <>
                 <NavLink
                   to="/myproducts"

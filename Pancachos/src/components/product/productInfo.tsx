@@ -3,13 +3,6 @@ import { addToCart, isInCart, removeFromCart } from "../../utils/cartUtils";
 import type { CartItem } from "../../utils/cartUtils";
 import type { Product } from "../../types/product";
 
-interface Comment {
-  icon: string;
-  username: string;
-  comment: string;
-  rating: number;
-}
-
 export default function ProductCard({ product }: { product: Product }) {
   const [isAdded, setIsAdded] = useState(false);
 
