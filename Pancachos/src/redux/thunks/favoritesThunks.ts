@@ -1,26 +1,41 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { supabase } from '../../config/supabaseClient'
+import { createAsyncThunk } from '@reduxjs/toolkit';
+import { supabase } from '../../config/supabaseClient';
 
-// Fetch user's favorite products
+// Fetch user's favorite products with details
 export const fetchUserFavorites = createAsyncThunk(
   'favorites/fetchUserFavorites',
   async (userId: string, { rejectWithValue }) => {
     try {
-      const { data, error } = await supabase
+      // Primero obtenemos los IDs favoritos
+      const { data: favData, error: favError } = await supabase
         .from('favorites')
         .select('product_id')
-        .eq('user_id', userId)
+        .eq('user_id', userId);
 
-      if (error) {
-        return rejectWithValue(error.message)
+      if (favError) {
+        return rejectWithValue(favError.message);
       }
 
-      return (data || []).map((fav) => fav.product_id)
+      const favoriteIds = (favData || []).map((fav) => fav.product_id);
+
+      if (favoriteIds.length === 0) return [];
+
+      // Ahora obtenemos los detalles de los productos favoritos
+      const { data: productsData, error: prodError } = await supabase
+        .from('products')
+        .select('*')
+        .in('id', favoriteIds);
+
+      if (prodError) {
+        return rejectWithValue(prodError.message);
+      }
+
+      return productsData || [];
     } catch (err) {
-      return rejectWithValue('Error al obtener favoritos')
+      return rejectWithValue('Error al obtener favoritos');
     }
   }
-)
+);
 
 // Toggle favorite status for a product
 export const toggleFavorite = createAsyncThunk(
@@ -33,10 +48,10 @@ export const toggleFavorite = createAsyncThunk(
         .select('id')
         .eq('user_id', userId)
         .eq('product_id', productId)
-        .single()
+        .single();
 
       if (checkError && checkError.code !== 'PGRST116') {
-        return rejectWithValue(checkError.message)
+        return rejectWithValue(checkError.message);
       }
 
       if (existingFavorite) {
@@ -45,13 +60,13 @@ export const toggleFavorite = createAsyncThunk(
           .from('favorites')
           .delete()
           .eq('user_id', userId)
-          .eq('product_id', productId)
+          .eq('product_id', productId);
 
         if (deleteError) {
-          return rejectWithValue(deleteError.message)
+          return rejectWithValue(deleteError.message);
         }
 
-        return { productId, action: 'removed' }
+        return { productId, action: 'removed' };
       } else {
         // Agregar a favoritos
         const { error: insertError } = await supabase
@@ -59,19 +74,19 @@ export const toggleFavorite = createAsyncThunk(
           .insert({
             user_id: userId,
             product_id: productId,
-          })
+          });
 
         if (insertError) {
-          return rejectWithValue(insertError.message)
+          return rejectWithValue(insertError.message);
         }
 
-        return { productId, action: 'added' }
+        return { productId, action: 'added' };
       }
     } catch (err) {
-      return rejectWithValue('Error al actualizar favorito')
+      return rejectWithValue('Error al actualizar favorito');
     }
   }
-)
+);
 
 // Add product to favorites
 export const addToFavorites = createAsyncThunk(
@@ -83,18 +98,18 @@ export const addToFavorites = createAsyncThunk(
         .insert({
           user_id: userId,
           product_id: productId,
-        })
+        });
 
       if (error) {
-        return rejectWithValue(error.message)
+        return rejectWithValue(error.message);
       }
 
-      return productId
+      return productId;
     } catch (err) {
-      return rejectWithValue('Error al agregar a favoritos')
+      return rejectWithValue('Error al agregar a favoritos');
     }
   }
-)
+);
 
 // Remove product from favorites
 export const removeFromFavorites = createAsyncThunk(
@@ -105,15 +120,15 @@ export const removeFromFavorites = createAsyncThunk(
         .from('favorites')
         .delete()
         .eq('user_id', userId)
-        .eq('product_id', productId)
+        .eq('product_id', productId);
 
       if (error) {
-        return rejectWithValue(error.message)
+        return rejectWithValue(error.message);
       }
 
-      return productId
+      return productId;
     } catch (err) {
-      return rejectWithValue('Error al remover de favoritos')
+      return rejectWithValue('Error al remover de favoritos');
     }
   }
-)
+);

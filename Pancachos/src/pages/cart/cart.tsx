@@ -1,65 +1,26 @@
 import { useEffect } from "react";
+import { removeFromCart } from "../../utils/cartUtils";
 import { FaTrash, FaShoppingCart, FaPlus, FaMinus } from "react-icons/fa";
 import Banner from "../../components/layout/banner";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchCartItems, removeFromCart, updateCartItemQuantity } from "../../redux/thunks/cartThunks";
+import { hydrateCart, removeFromCart as removeFromCartRedux } from "../../redux/slices/cartSlice";
 
 export default function CartPage() {
   const dispatch = useAppDispatch();
-  const currentUser = useAppSelector((state) => state.auth.user);
-  const cartItems = useAppSelector((state) => state.cart.items);
-  const allProducts = useAppSelector((state) => state.products.allProducts);
+  const items = useAppSelector((state) => state.cart.items);
 
-  // Cargar carrito del usuario actual
   useEffect(() => {
-    const loadCart = async () => {
-      if (currentUser?.id) {
-        try {
-          await dispatch(fetchCartItems(currentUser.id) as any);
-        } catch (error) {
-          console.error('Error loading cart:', error);
-        }
-      }
-    };
+    // Hidratar el carrito desde localStorage al montar el componente
+    dispatch(hydrateCart());
+  }, [dispatch]);
 
-    loadCart();
-  }, [currentUser?.id, dispatch]);
-
-  const handleRemove = async (cartItemId: string) => {
-    if (currentUser?.id) {
-      try {
-        await dispatch(removeFromCart({ userId: currentUser.id, cartItemId }) as any);
-      } catch (error) {
-        console.error('Error removing from cart:', error);
-      }
-    }
+  const handleRemove = (id: number | string) => {
+    // Eliminar tanto de Redux como de localStorage
+    dispatch(removeFromCartRedux(id));
+    removeFromCart(id); // Para mantener localStorage sincronizado
   };
 
-  const handleQuantityChange = async (cartItemId: string, newQuantity: number) => {
-    if (currentUser?.id) {
-      try {
-        await dispatch(updateCartItemQuantity({ userId: currentUser.id, cartItemId, quantity: newQuantity }) as any);
-      } catch (error) {
-        console.error('Error updating quantity:', error);
-      }
-    }
-  };
-
-  // Enriquecer items del carrito con información del producto
-  const enrichedItems: any[] = (cartItems as any[]).map((item: any) => {
-    // Normalizar posibles nombres/formatos desde Supabase (product_id puede ser string/number)
-    const productId = Number(item.product_id ?? item.productId ?? item.product?.id ?? item.productId);
-    return {
-      ...item,
-      product: allProducts.find((p) => Number(p.id) === productId) || null,
-    };
-  });
-
-  const total = enrichedItems.reduce((sum, item: any) => {
-    const price = Number(item.product?.price ?? item.price ?? 0);
-    const qty = Number(item.quantity ?? 0);
-    return sum + price * qty;
-  }, 0);
+  const total = items.reduce((s, it) => s + (Number(it.price) || 0), 0);
 
   return (
     <div className="min-h-screen flex flex-col items-center bg-[#2870B8]">
@@ -78,58 +39,52 @@ export default function CartPage() {
             </h2>
           </div>
 
-          {enrichedItems.length === 0 ? (
+          {items.length === 0 ? (
             <div className="p-6 bg-white rounded-xl shadow-sm border border-[#E8E8E8]">
               <p className="text-gray-600">Your cart is empty.</p>
             </div>
           ) : (
             <div className="grid md:grid-cols-3 gap-6">
               <section className="md:col-span-2 p-6 bg-[#F6E6CE] rounded-xl shadow-sm border border-[#E8DCC0]">
-                {enrichedItems.map((item: any) => (
+                {items.map((it) => (
                   <div
-                    key={String(item.id)}
+                    key={String(it.id)}
                     className="flex items-center gap-4 p-4 bg-white rounded-lg border border-[#F1EDE6] mb-4"
                   >
                     <img
-                      src={item.product?.image || "/images/products/default.png"}
-                      alt={item.product?.name || "Product"}
+                      src={it.image || "/images/products/default.png"}
+                      alt={it.name}
                       className="w-24 h-24 rounded-md object-cover shadow-sm"
                     />
 
                     <div className="flex-1">
-                      <div className="font-semibold text-[#1F2937]">{item.product?.name}</div>
+                      <div className="font-semibold text-[#1F2937]">{it.name}</div>
                       <div className="mt-2 flex items-center gap-2">
-                        <span className="px-2 py-0.5 text-xs bg-[#F6ECCD] rounded text-[#8A6B3A]">{item.product?.size}</span>
-                        <span className="px-2 py-0.5 text-xs bg-[#F6ECCD] rounded text-[#8A6B3A]">{item.product?.temperature}</span>
+                        <span className="px-2 py-0.5 text-xs bg-[#F6ECCD] rounded text-[#8A6B3A]">Size</span>
+                        <span className="px-2 py-0.5 text-xs bg-[#F6ECCD] rounded text-[#8A6B3A]">Warm</span>
                       </div>
                       <div className="mt-3 flex items-center gap-3">
                         <div className="flex items-center gap-2 bg-[#F3F7FB] px-2 py-1 rounded">
-                          <button 
-                            onClick={() => handleQuantityChange(String(item.id), Math.max(1, Number(item.quantity) - 1))}
-                            className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80 hover:opacity-100"
-                          >
+                          <button className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80" disabled>
                             <FaMinus />
                           </button>
-                          <div className="px-3 text-sm font-medium">{item.quantity}</div>
-                          <button 
-                            onClick={() => handleQuantityChange(String(item.id), Number(item.quantity) + 1)}
-                            className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80 hover:opacity-100"
-                          >
+                          <div className="px-3 text-sm font-medium">1</div>
+                          <button className="text-sm text-[#2870B8] p-1 rounded bg-white opacity-80" disabled>
                             <FaPlus />
                           </button>
                         </div>
                         <div className="text-sm text-gray-500">Price</div>
-                        <div className="font-semibold text-[#1F2937]">${Number(item.product?.price ?? 0).toFixed(2)}</div>
+                        <div className="font-semibold text-[#1F2937]">${Number(it.price || 0).toFixed(2)}</div>
                       </div>
                     </div>
 
                     <div className="text-right">
-                      <div className="font-semibold">${(Number(item.product?.price ?? 0) * Number(item.quantity ?? 0)).toFixed(2)}</div>
+                      <div className="font-semibold">${Number(it.price || 0).toFixed(2)}</div>
                       <div className="text-sm text-gray-500">Total</div>
                       <button
-                        onClick={() => handleRemove(String(item.id))}
+                        onClick={() => handleRemove(it.id)}
                         className="mt-3 text-red-500 hover:text-red-600"
-                        aria-label={`Remove ${item.product?.name}`}
+                        aria-label={`Remove ${it.name}`}
                       >
                         <FaTrash />
                       </button>
@@ -144,7 +99,7 @@ export default function CartPage() {
                 <div className="mb-4">
                   <div className="flex items-center justify-between bg-[#FBFBFB] p-3 rounded">
                     <div className="text-sm text-gray-600">Items:</div>
-                    <div className="font-semibold">{enrichedItems.length}</div>
+                    <div className="font-semibold">{items.length}</div>
                   </div>
                 </div>
 

@@ -4,7 +4,7 @@ import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import type { Product } from "../../types/product";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchUserFavorites } from "../../redux/thunks/favoritesThunks";
+import { fetchUserFavorites, toggleFavorite } from "../../redux/thunks/favoritesThunks";
 
 function Favourite() {
   const dispatch = useAppDispatch();
@@ -15,7 +15,7 @@ function Favourite() {
   // Cargar favoritos del usuario actual
   useEffect(() => {
     if (currentUser?.id) {
-      dispatch(fetchUserFavorites(currentUser.id) as any);
+      dispatch(fetchUserFavorites(currentUser.id));
     }
   }, [currentUser?.id, dispatch]);
 
@@ -23,6 +23,13 @@ function Favourite() {
   const favoriteProducts: Product[] = allProducts.filter((p) =>
     favoriteIds.includes(p.id)
   );
+
+  // Manejar click en favorito (opcional, si ProductCard no lo maneja internamente)
+  const handleToggleFavorite = (productId: string) => {
+    if (currentUser?.id) {
+      dispatch(toggleFavorite({ userId: currentUser.id, productId }));
+    }
+  };
 
   return (
     <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">
@@ -43,7 +50,11 @@ function Favourite() {
         ) : (
           <div className="flex gap-4 md:gap-6 overflow-x-auto scrollbar-hide py-2">
             {favoriteProducts.map((product) => (
-              <ProductCard key={product.id} product={product} Click={() => {}} />
+              <ProductCard
+                key={product.id}
+                product={product}
+                Click={() => handleToggleFavorite(product.id)}
+              />
             ))}
           </div>
         )}
