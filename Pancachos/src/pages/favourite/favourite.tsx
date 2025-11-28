@@ -4,7 +4,7 @@ import Footer from "../../components/footer/footer";
 import Navbar from "../../components/layout/navbar";
 import ProductCard from "../../components/product/productcard";
 import { useAppDispatch, useAppSelector } from "../../redux/hooks";
-import { fetchProducts } from "../../redux/thunks/productsThunks";
+import { fetchProducts, toggleFavorite } from "../../redux/thunks/productsThunks";
 
 function Favourite() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function Favourite() {
   // Cargar productos si aún no están (por si quieres usar info adicional)
   useEffect(() => {
     if (!allProducts.length) {
-      dispatch(fetchProducts() as any);
+      dispatch(fetchProducts());
     }
   }, [allProducts.length, dispatch]);
 
@@ -48,6 +48,13 @@ function Favourite() {
       </div>
     );
   }
+
+  // Manejar click en favorito (opcional, si ProductCard no lo maneja internamente)
+  const handleToggleFavorite = (productId: string) => {
+    if (currentUser?.id) {
+      dispatch(toggleFavorite({ userId: currentUser.id, productId }));
+    }
+  };
 
   return (
     <div className="bg-linear-to-r from-[#2971B9] to-[#69ADF1] min-h-screen w-full flex flex-col items-center px-4 py-6 md:py-8">
@@ -81,7 +88,7 @@ function Favourite() {
               <ProductCard
                 key={product.id}
                 product={product}
-                Click={() => navigate(`/info/${product.id}`)}
+                Click={() => handleToggleFavorite(product.id)}
               />
             ))}
           </div>
