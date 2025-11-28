@@ -12,67 +12,72 @@ interface ProductCardProps {
 
 export default function ProductCard({ product, Click }: ProductCardProps) {
   const dispatch = useAppDispatch();
-
   const favoriteIds = useAppSelector((state) => state.favorites.favoriteIds);
-  const currentUser = useAppSelector((state) => state.auth.user);
-
+  
   const [added, setAdded] = useState(false);
   const [favorite, setFavorite] = useState(false);
 
-  // Carrito
+  // sincronizar estado inicial y escuchar cambios globales del carrito y favoritos
   useEffect(() => {
-    setAdded(isInCart(product.id as any));
-  }, [product.id]);
+    setAdded(isInCart(product.id));
+    setFavorite(favoriteIds.includes(product.id));
 
-  // Favoritos (sincronizar con Redux)
-  useEffect(() => {
-    const isFav = favoriteIds.some((id) => String(id) === String(product.id));
-    setFavorite(isFav);
-  }, [favoriteIds, product.id]);
+    const onCartUpdated = () => {
+      setAdded(isInCart(product.id));
+    };
+
+    const onFavoriteUpdated = () => {
+      setFavorite(favoriteIds.includes(product.id));
+    };
+
+    window.addEventListener("cartUpdated", onCartUpdated);
+    window.addEventListener("favoriteUpdated", onFavoriteUpdated);
+    window.addEventListener("storage", onCartUpdated as EventListener);
+    window.addEventListener("storage", onFavoriteUpdated as EventListener);
+
+    return () => {
+      window.removeEventListener("cartUpdated", onCartUpdated);
+      window.removeEventListener("favoriteUpdated", onFavoriteUpdated);
+      window.removeEventListener("storage", onCartUpdated as EventListener);
+      window.removeEventListener("storage", onFavoriteUpdated as EventListener);
+    };
+  }, [product.id, favoriteIds]);
 
   const handleAdd = () => {
     const item = {
-      id: product.id as any,
+      id: product.id,
       name: product.name,
       price: product.price,
       image: product.image,
     };
-
+    // Agregar a Redux
     dispatch(addToCartRedux(item));
+    // También agregar a localStorage para compatibilidad
     addToCart(item);
     setAdded(true);
   };
 
   const handleFavorite = async () => {
+    const currentUser = useAppSelector((state) => state.auth.user);
+    
     if (!currentUser?.id) {
       alert('Please log in to add favorites');
       return;
     }
-
+    
     try {
-      const result = await dispatch(
-        toggleFavorite({
-          userId: currentUser.id,
-          productId: product.id as any,
-          product, // 🔹 enviamos el producto completo
-        })
-      ).unwrap();
-
-      console.log('toggleFavorite result:', result);
-    } catch (err: any) {
-      console.error('Error toggling favorite:', err);
-      const message =
-        typeof err === 'string'
-          ? err
-          : err?.message || 'Error updating favorite. Please try again.';
-      alert(message);
+      await dispatch(toggleFavorite({ productId: product.id, userId: currentUser.id, product }) as any);
+      setFavorite(!favorite);
+      window.dispatchEvent(new Event("favoriteUpdated"));
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
     }
   };
 
   return (
     <div className="bg-white rounded-2xl shadow-lg w-72 shrink-0 overflow-hidden hover:shadow-xl transition-shadow">
       {/* Imagen del producto */}
-      <div className="relative cursor-pointer" onClick={Click}>
+      <div className="relative cursor-pointer" onClick={() => Click()}>
         <img
           src={product.image}
           alt={product.name}
@@ -87,25 +92,28 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
 
       {/* Contenido de la card */}
       <div className="p-4">
-        {/* Título y corazón */}
+        {/* Título, logo y corazón */}
         <div className="flex justify-between items-start mb-2">
           <h3 className="font-semibold text-gray-800 text-sm leading-tight">
             {product.name}
           </h3>
 
           <div className="flex items-center gap-2">
+            {/* Logo de panadería - Comentado por ahora, se implementará con relación a users */}
+
+            {/* Botón favorito */}
             <button
               className={`rounded-full p-1 transition-colors ${
-                favorite ? 'bg-red-100 text-red-500' : 'bg-gray-100 text-gray-400'
+                favorite ? 'bg-blue-100 text-blue-500' : 'text-gray-700'
               }`}
               onClick={handleFavorite}
             >
-              {favorite ? '❤️' : '🤍'}
+              {favorite ? '💙' : '🤍'}
             </button>
           </div>
         </div>
 
-        {/* Tags */}
+        {/* Tags de tamaño y temperatura */}
         <div className="flex gap-2 mb-3">
           <span className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded-full border">
             {product.size}
@@ -115,17 +123,18 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
           </span>
         </div>
 
-        {/* Descripción */}
+        {/* Descripción del producto */}
         <p className="text-xs text-gray-500 leading-tight mb-4">
           {product.description}
         </p>
 
-        {/* Precio y carrito */}
+        {/* Precio y botón de compra */}
         <div className="flex items-center justify-between">
           <span className="font-semibold text-gray-800 text-sm">
             $ {product.price.toLocaleString()} COP
           </span>
 
+          {/* Botón Add to cart */}
           <button
             className={`${
               added ? 'bg-[#786033]' : 'bg-[#C3A366] hover:bg-[#786033]'
@@ -140,5 +149,4 @@ export default function ProductCard({ product, Click }: ProductCardProps) {
     </div>
   );
 }
-
 

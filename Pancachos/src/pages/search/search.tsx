@@ -27,7 +27,7 @@ export default function SearchPage() {
   );
 
   const handleProductClick = (productId: number) => {
-    navigate(`/product/${productId}`, { state: { id: productId, isUserProduct: false } });
+    navigate(`product/${productId}`, { state: { id: productId, isUserProduct: false } });
   };
 
   return (

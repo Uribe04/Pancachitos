@@ -74,11 +74,12 @@ function BakeryCarousel({
         <div className="flex items-center justify-center mb-12">
           <div className="relative h-40 w-40 md:h-48 md:w-48 flex items-center justify-center overflow-hidden">
             <img
-              src={bakeryLogo}
-              alt={`${bakeryName} logo`}
-              className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
-              loading="lazy"
-            />
+  src={bakeryLogo}
+  alt={`${bakeryName} logo`}
+  className="w-full h-full object-contain hover:scale-105 transition-transform duration-300"
+  loading="lazy"
+/>
+
           </div>
         </div>
 
@@ -99,14 +100,15 @@ function BakeryCarousel({
           >
             {products.map((product) => (
               <ProductCard
-                key={product.id}
-                product={product}
-                Click={() =>
-                  navigate(`/product/${product.id}`, {
-                    state: { id: product.id, isUserProduct: isUserProducts },
-                  })
-                }
-              />
+  key={product.id}
+  product={product}
+  Click={() =>
+    navigate(`/product/${product.id}`, {
+      state: { id: product.id, isUserProduct: isUserProducts },
+    })
+  }
+/>
+
             ))}
           </div>
 

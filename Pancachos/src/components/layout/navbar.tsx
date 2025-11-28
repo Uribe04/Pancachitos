@@ -22,11 +22,12 @@ export default function Navbar() {
   };
 
   const handleSearch = () => {
-    if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
-      setQuery("");
-    }
-  };
+  if (query.trim()) {
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+    setQuery("");
+  }
+};
+
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
@@ -133,4 +134,3 @@ export default function Navbar() {
     </nav>
   );
 }
-

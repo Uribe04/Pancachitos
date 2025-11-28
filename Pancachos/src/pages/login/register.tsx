@@ -108,10 +108,11 @@ export default function Register() {
       <div
         className="relative w-full max-w-[850px] md:max-w-[900px] h-auto md:h-[520px] rounded-2xl border-[6px] border-[#d5a84a] overflow-hidden flex flex-col md:flex-row items-center justify-center shadow-lg"
         style={{
-          backgroundImage: `url('/images/bg login-register.png')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
-        }}
+  backgroundImage: `url('/images/bg login-register.png')`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+}}
+
       >
         <div className="absolute inset-0 bg-black/30 md:bg-transparent" />
         <div className="relative z-10 flex flex-col md:flex-row items-center justify-center md:justify-end w-full px-4 sm:px-8 md:pr-16 py-10 md:py-0">
