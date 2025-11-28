@@ -4,39 +4,34 @@ import { FaPlus, FaEdit, FaStar } from 'react-icons/fa';
 import Navbar from '../../components/layout/navbar';
 import type { Product } from '../../types/product';
 import { displayPrice } from '../../utils/formatPrice';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { fetchProductsBySeller } from '../../redux/thunks/productsThunks';
+import { useAppSelector } from '../../redux/hooks';
 
 function MyProducts() {
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
+  const allProducts = useAppSelector((state) => state.products.allProducts);
   const currentUser = useAppSelector((state) => state.auth.user);
-  const sellerProducts = useAppSelector((state) => state.products.sellerProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Cargar productos del usuario actual desde Supabase
   useEffect(() => {
-    const loadSellerProducts = async () => {
-      if (currentUser?.id) {
-        setLoading(true);
-        try {
-          await dispatch(fetchProductsBySeller(currentUser.id) as any);
-        } catch (error) {
-          console.error('Error loading products:', error);
-        } finally {
-          setLoading(false);
-        }
-      }
-    };
-
-    loadSellerProducts();
-  }, [currentUser?.id, dispatch]);
+    try {
+      // Filtrar productos por email del usuario actual (no por constante)
+      const userProducts = currentUser
+        ? allProducts.filter((p) => p.sellerId === currentUser.email)
+        : [];
+      setProducts(userProducts);
+    } catch (error) {
+      console.error('Error loading products:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [allProducts, currentUser]);
 
   const handleCreateNew = () => {
     navigate('/createproduct');
   };
 
-  const handleEditProduct = (productId: string) => {
+  const handleEditProduct = (productId: number) => {
     navigate(`/editproduct/${productId}`);
   };
 
@@ -73,9 +68,9 @@ function MyProducts() {
             </button>
           </div>
 
-          {sellerProducts.length > 0 ? (
+          {products.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {sellerProducts.map((product) => (
+              {products.map((product) => (
                 <div
                   key={product.id}
                   className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
@@ -94,7 +89,7 @@ function MyProducts() {
                     >
                       <FaStar className="text-yellow-400" />
                       <span className="text-sm font-medium">
-                        {(product.rating ?? 0).toFixed(1)}
+                        {product.rating.toFixed(1)}
                       </span>
                     </div>
                     {/* Badge de no disponible */}
