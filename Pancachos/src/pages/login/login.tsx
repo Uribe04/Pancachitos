@@ -1,16 +1,15 @@
 import { useNavigate } from "react-router-dom";
-import {useState } from "react";
-import type { FormEvent} from "react";
-import { verifyUser } from "../../utils/validateForm";
-import { getUserByCredentials } from "../../utils/localStorage";
-import { useAppDispatch } from "../../redux/hooks";
-import { setUser } from "../../redux/slices/authSlice";
+import { useState } from "react";
+import type { FormEvent } from "react";
+import { useAppDispatch, useAppSelector } from "../../redux/hooks";
+import { loginUser } from "../../redux/thunks/authThunks";
 import { hydrateFavorites } from "../../redux/slices/favoritesSlice";
 import { resetCartOnLogout } from "../../redux/slices/cartSlice";
 
 export default function Login() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const { loading } = useAppSelector((state) => state.auth);
   const [formData, setFormData] = useState({
     email: '',
     password: ''
@@ -20,7 +19,6 @@ export default function Login() {
     password: '',
     general: ''
   });
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -38,7 +36,7 @@ export default function Login() {
     }
   };
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     
     const newErrors = {
@@ -56,36 +54,27 @@ export default function Login() {
       return;
     }
 
-    setIsSubmitting(true);
+    // Limpiar carrito del usuario anterior
+    dispatch(resetCartOnLogout());
 
-    // Verify credentials using validateForm utility
-    if (verifyUser(formData.email, formData.password)) {
-      // Buscar el usuario real y guardarlo en Redux
-      const user = getUserByCredentials(formData.email, formData.password);
-      if (user) {
-        // Limpiar carrito del usuario anterior
-        dispatch(resetCartOnLogout());
-        
-        // Guardar nuevo usuario
-        dispatch(setUser(user));
-        
-        // Cargar favoritos del nuevo usuario
-        dispatch(hydrateFavorites(user.email));
-        
-        navigate("/");
-      } else {
-        setErrors({
-          ...newErrors,
-          general: 'User not found in system'
-        });
-        setIsSubmitting(false);
-      }
+    // Usar thunk de login con Supabase
+    const result = await dispatch(loginUser({ 
+      email: formData.email, 
+      password: formData.password 
+    }));
+
+    if (result.meta.requestStatus === 'fulfilled') {
+      // Login exitoso
+      const user = result.payload as any;
+      // Cargar favoritos del nuevo usuario
+      dispatch(hydrateFavorites(user.email));
+      navigate("/");
     } else {
+      // Login fallido
       setErrors({
         ...newErrors,
-        general: 'Invalid email or password'
+        general: (result.payload as string) || 'Invalid email or password'
       });
-      setIsSubmitting(false);
     }
   };
 
@@ -145,10 +134,10 @@ export default function Login() {
 
               <button
                 type="submit"
-                disabled={isSubmitting}
-                className={`bg-[#69ADF1] ${isSubmitting ? 'opacity-50' : 'hover:bg-[#4c95e5]'} text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform ${!isSubmitting && 'hover:scale-105'} text-sm`}
+                disabled={loading}
+                className={`bg-[#69ADF1] ${loading ? 'opacity-50' : 'hover:bg-[#4c95e5]'} text-white font-semibold py-2.5 rounded-lg shadow-md transition-transform ${!loading && 'hover:scale-105'} text-sm`}
               >
-                {isSubmitting ? 'Logging in...' : 'Log In'}
+                {loading ? 'Logging in...' : 'Log In'}
               </button>
             </form>
 

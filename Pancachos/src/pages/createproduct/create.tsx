@@ -1,19 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 import Navbar from '../../components/layout/navbar';
 import ProductForm from '../../components/product/productforms';
-import type { Product, ProductFormData } from '../../types/product';
+import type { ProductFormData } from '../../types/product';
 import { SUCCESS_MESSAGES } from '../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { addProduct as addProductToRedux } from '../../redux/slices/productsSlice';
-import { addProduct as addProductToLocalStorage } from '../../utils/localStorage';
+import { createProduct } from '../../redux/thunks/productsThunks';
 
 function CreateProduct() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const allProducts = useAppSelector((state) => state.products.allProducts);
   const currentUser = useAppSelector((state) => state.auth.user);
 
-  const handleSaveProduct = (productData: ProductFormData) => {
+  const handleSaveProduct = async (productData: ProductFormData) => {
     if (!currentUser) {
       alert('You must be logged in to create a product');
       navigate('/login');
@@ -21,33 +19,25 @@ function CreateProduct() {
     }
 
     try {
-      // Generar ID único basado en los productos existentes
-      const newId =
-        allProducts.length > 0
-          ? Math.max(...allProducts.map((p) => p.id)) + 1
-          : 1;
-
-      // Crear nuevo producto con sellerId = email del usuario actual
-      const newProduct: Product = {
+      // Preparar datos del producto con seller_id del usuario actual
+      const newProductData = {
         ...productData,
-        id: newId,
-        sellerId: currentUser.email,  // ← CAMBIO: Usar email del usuario
+        seller_id: currentUser.id || currentUser.email,  // Usar ID de Supabase
         rating: 0,
-        reviewCount: 0,
-        createdAt: new Date().toISOString(),
-        comments: [],
+        review_count: 0,
       };
 
-      // Guardar en Redux
-      dispatch(addProductToRedux(newProduct));
-      // También guardar en localStorage para compatibilidad
-      addProductToLocalStorage(newProduct);
+      // Usar thunk para crear producto en Supabase
+      const result = await dispatch(createProduct(newProductData) as any);
 
-      // Mostrar mensaje de éxito
-      alert(SUCCESS_MESSAGES.PRODUCT_CREATED);
-
-      // Navegar de vuelta a la página de productos
-      navigate('/myproducts');
+      if (result.meta.requestStatus === 'fulfilled') {
+        // Producto creado exitosamente
+        alert(SUCCESS_MESSAGES.PRODUCT_CREATED);
+        navigate('/myproducts');
+      } else {
+        // Error al crear producto
+        alert(result.payload || 'There was an error creating the product. Please try again.');
+      }
     } catch (error) {
       console.error('Error creating product:', error);
       alert('There was an error creating the product. Please try again.');
@@ -59,7 +49,7 @@ function CreateProduct() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+    <div className="min-h-screen bg-linear-to-br from-blue-400 to-blue-600">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
@@ -79,4 +69,3 @@ function CreateProduct() {
 }
 
 export default CreateProduct;
-

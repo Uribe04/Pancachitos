@@ -5,13 +5,13 @@ import ProductForm from '../../components/product/productforms';
 import type { Product, ProductFormData } from '../../types/product';
 import { SUCCESS_MESSAGES } from '../../utils/constants';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
-import { updateProduct as updateProductRedux, markProductUnavailable, deleteProduct as deleteProductRedux } from '../../redux/slices/productsSlice';
-import { updateProduct as updateProductLocalStorage, deleteProduct as deleteProductLocalStorage, markProductAsUnavailable } from '../../utils/localStorage';
+import { updateProduct as updateProductThunk, deleteProduct as deleteProductThunk } from '../../redux/thunks/productsThunks';
 
 function EditProduct() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { id } = useParams<{ id: string }>();
+  const currentUser = useAppSelector((state) => state.auth.user);
   const allProducts = useAppSelector((state) => state.products.allProducts);
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
@@ -22,10 +22,16 @@ function EditProduct() {
       return;
     }
 
-    const productId = parseInt(id);
-    const foundProduct = allProducts.find((p) => p.id === productId);
+    // Buscar producto por UUID en lugar de número
+    const foundProduct = allProducts.find((p) => p.id === id);
 
     if (foundProduct) {
+      // Verificar que el usuario es el dueño del producto
+      if (foundProduct.seller_id !== currentUser?.id && foundProduct.seller_id !== currentUser?.email) {
+        alert('You do not have permission to edit this product');
+        navigate('/myproducts');
+        return;
+      }
       setProduct(foundProduct);
     } else {
       alert('Product not found');
@@ -33,63 +39,49 @@ function EditProduct() {
     }
 
     setLoading(false);
-  }, [id, navigate, allProducts]);
+  }, [id, navigate, allProducts, currentUser]);
 
-  const handleUpdateProduct = (productData: ProductFormData) => {
+  const handleUpdateProduct = async (productData: ProductFormData) => {
     if (!product) return;
 
     try {
-      const updatedProduct: Product = {
-        ...product,
+      // Preparar solo los campos que se actualizan
+      const updates: Partial<Product> = {
         ...productData,
-        rating: product.rating,
-        reviewCount: product.reviewCount,
-        createdAt: product.createdAt,
+        updated_at: new Date().toISOString(),
       };
 
-      // Actualizar en Redux
-      dispatch(updateProductRedux(updatedProduct));
-      // También actualizar en localStorage para compatibilidad
-      updateProductLocalStorage(updatedProduct);
+      // Usar thunk para actualizar producto en Supabase
+      const result = await dispatch(updateProductThunk({ id: product.id, updates }) as any);
 
-      alert(SUCCESS_MESSAGES.PRODUCT_UPDATED);
-      navigate('/myproducts');
+      if (result.meta.requestStatus === 'fulfilled') {
+        alert(SUCCESS_MESSAGES.PRODUCT_UPDATED);
+        navigate('/myproducts');
+      } else {
+        alert(result.payload || 'There was an error updating the product. Please try again.');
+      }
     } catch (error) {
       console.error('Error updating product:', error);
       alert('There was an error updating the product. Please try again.');
     }
   };
 
-  const handleMarkUnavailable = (productId: number) => {
-    const confirmAction = confirm(
-      'Are you sure you want to mark this product as unavailable? This will hide it from customers but preserve its reviews and history.'
-    );
+  const handleDeleteProduct = async () => {
+    if (!product || !product.id) return;
 
-    if (confirmAction) {
-      try {
-        // Marcar como no disponible en Redux
-        dispatch(markProductUnavailable(productId));
-        // También en localStorage
-        markProductAsUnavailable(productId);
+    const confirmDelete = confirm('Are you sure you want to permanently delete this product?');
+    if (!confirmDelete) return;
 
-        alert(SUCCESS_MESSAGES.PRODUCT_UNAVAILABLE);
-        navigate('/myproducts');
-      } catch (error) {
-        console.error('Error marking product as unavailable:', error);
-        alert('There was an error. Please try again.');
-      }
-    }
-  };
-
-  const handleDeleteProduct = (productId: number) => {
     try {
-      // Eliminar en Redux
-      dispatch(deleteProductRedux(productId));
-      // También en localStorage
-      deleteProductLocalStorage(productId);
+      // Usar thunk para eliminar producto de Supabase
+      const result = await dispatch(deleteProductThunk(product.id) as any);
 
-      alert('✅ Product deleted permanently');
-      navigate('/myproducts');
+      if (result.meta.requestStatus === 'fulfilled') {
+        alert('✅ Product deleted permanently');
+        navigate('/myproducts');
+      } else {
+        alert(result.payload || 'There was an error deleting the product. Please try again.');
+      }
     } catch (error) {
       console.error('Error deleting product:', error);
       alert('There was an error deleting the product. Please try again.');
@@ -102,7 +94,7 @@ function EditProduct() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+      <div className="min-h-screen bg-linear-to-br from-blue-400 to-blue-600">
         <Navbar />
         <div className="flex items-center justify-center h-[calc(100vh-200px)]">
           <div className="text-white text-2xl">Loading...</div>
@@ -116,7 +108,7 @@ function EditProduct() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-400 to-blue-600">
+    <div className="min-h-screen bg-linear-to-br from-blue-400 to-blue-600">
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 py-8">
@@ -128,7 +120,6 @@ function EditProduct() {
             product={product}
             onSave={handleUpdateProduct}
             onCancel={handleCancel}
-            onMarkUnavailable={handleMarkUnavailable}
             onDelete={handleDeleteProduct}
             isEditMode={true}
           />

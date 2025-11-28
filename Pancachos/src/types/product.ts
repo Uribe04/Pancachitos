@@ -33,7 +33,7 @@ export interface ProductFormData {
   category?: string;
   tags?: string[];
   stock: number;
-  seller_id: string;  // Cambié de sellerId a snake_case
+  seller_id?: string;  // Opcional: se proporciona desde el componente que usa el formulario
   available: boolean;
 }
 

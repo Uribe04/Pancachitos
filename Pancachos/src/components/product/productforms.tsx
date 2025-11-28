@@ -13,15 +13,13 @@ import {
   TEMPERATURE_OPTIONS,
   PREDEFINED_TAGS,
   PRODUCT_CATEGORIES,
-  DEFAULT_SELLER,
 } from '../../utils/constants';
 
 interface ProductFormProps {
   product?: Product | null;
   onSave: (product: ProductFormData) => void;
   onCancel: () => void;
-  onMarkUnavailable?: (productId: number) => void;
-  onDelete?: (productId: number) => void;
+  onDelete?: (productId: string) => void;
   isEditMode?: boolean;
 }
 
@@ -29,13 +27,10 @@ function ProductForm({
   product,
   onSave,
   onCancel,
-  onMarkUnavailable,
   onDelete,
   isEditMode = false,
 }: ProductFormProps) {
   const [name, setName] = useState(product?.name || '');
-  const [bakery, setBakery] = useState(product?.bakery || DEFAULT_SELLER.name);
-  const [bakeryLogo, setBakeryLogo] = useState(product?.bakeryLogo || DEFAULT_SELLER.logo);
   const [description, setDescription] = useState(product?.description || '');
   const [price, setPrice] = useState(product?.price?.toString() || '');
   const [image, setImage] = useState(product?.image || '');
@@ -51,16 +46,14 @@ function ProductForm({
   useEffect(() => {
     if (product) {
       setName(product.name);
-      setBakery(product.bakery);
-      setBakeryLogo(product.bakeryLogo);
-      setDescription(product.description);
+      setDescription(product.description || '');
       setPrice(product.price.toString());
-      setImage(product.image);
-      setCategory(product.category);
-      setSize(product.size);
-      setTemperature(product.temperature);
+      setImage(product.image || '');
+      setCategory(product.category || '');
+      setSize(product.size || '');
+      setTemperature(product.temperature || '');
       setStock(product.stock.toString());
-      setTags(product.tags);
+      setTags(product.tags || []);
     }
   }, [product]);
 
@@ -96,24 +89,6 @@ function ProductForm({
         const newErrors = { ...errors };
         delete newErrors.image;
         setErrors(newErrors);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  //Función para subir logo de panadería
-  const handleBakeryLogoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const validation = validateImageFile(file);
-      if (!validation.isValid) {
-        alert(validation.error);
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setBakeryLogo(reader.result as string);
       };
       reader.readAsDataURL(file);
     }
@@ -161,8 +136,6 @@ function ProductForm({
 
     const productData: ProductFormData = {
       name: name.trim(),
-      bakery: bakery.trim(),
-      bakeryLogo: bakeryLogo.trim(),
       description: description.trim(),
       price: parseFloat(price),
       image,
@@ -171,7 +144,6 @@ function ProductForm({
       temperature,
       tags,
       stock: parseInt(stock) || 1,
-      sellerId: DEFAULT_SELLER.id,
       available: true,
     };
 
@@ -227,38 +199,6 @@ function ProductForm({
               className="text-4xl font-bold bg-transparent border-none outline-none flex-1 text-gray-900"
             />
             <FaEdit className="text-blue-400" />
-          </div>
-        </div>
-
-        {/*Bakery Info con upload de imagen */}
-        <div className="space-y-3">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bakery Name</label>
-            <input
-              type="text"
-              value={bakery}
-              onChange={(e) => setBakery(e.target.value)}
-              className="w-full px-4 py-2 border-2 border-gray-300 rounded-lg outline-none focus:border-amber-600"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Bakery Logo</label>
-            <div className="flex items-center gap-3">
-              {bakeryLogo && (
-                <img src={bakeryLogo} alt="Bakery logo" className="w-16 h-16 object-contain rounded-lg border-2 border-gray-300" />
-              )}
-              <label className="flex-1 px-4 py-2 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:border-amber-600 transition-colors text-center">
-                <span className="text-sm text-gray-600">
-                  {bakeryLogo ? 'Change logo' : 'Upload logo'}
-                </span>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleBakeryLogoUpload}
-                  className="hidden"
-                />
-              </label>
-            </div>
           </div>
         </div>
 
@@ -453,12 +393,6 @@ function ProductForm({
         {isEditMode && product && (
           <div className="space-y-3">
             <div className="flex gap-4">
-              <button
-                onClick={() => onMarkUnavailable?.(product.id)}
-                className="flex-1 py-3 rounded-xl font-medium border-2 border-[#D7B77C] text-[#D7B77C] hover:bg-amber-50 transition-colors"
-              >
-                Mark as unavailable
-              </button>
               <button
                 onClick={onCancel}
                 className="flex-1 py-3 rounded-xl font-medium bg-gray-200 text-gray-700 hover:bg-gray-300 transition-colors"
